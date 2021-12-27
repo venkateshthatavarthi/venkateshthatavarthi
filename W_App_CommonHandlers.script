@@ -1704,20 +1704,25 @@ to handle LoginToApplication username,password
 		If imagefound(text:"Dismis",waitfor:7,SearchRectangle:ScreenPart("TopRightQuadrant"))
 			Click foundimagelocation()
 		end if
-	    if ImageFound(text:"View My Vaults",WaitFor:20,SearchRectangle:screenPart("TopHalf"))
-           wait 2
-        Click FoundImageLocation()   
-        end if
-         wait 3
-if ImageFound(text:"SIT", waitFor:20)
+	(*if ImageFound(text:"SIT", waitFor:20)
 click item 2 of EveryImageLocation(text:"SIT")
+end if*)
+if ImageFound(text:"View My Vaults",WaitFor:20,SearchRectangle:screenPart("TopHalf"))
+	wait 2
+	Click FoundImageLocation()
 end if
+wait 3
+if ImageFound(text:"Informal", waitFor:20)
+	Click text:"Informal", waitFor:30,searchrectangle:ScreenPart("TopRightQuadrant")
+end if
+
 	Catch theException
 		Logerror theException
 		W_App_CommonHandlers.CaptureAtLog
 		
 	End try
 end  LoginToApplication
+
 
 // selecting a qms process as Change Control, Deviation, Capa Items
 to handle SelectingQMSProcess
@@ -2086,7 +2091,7 @@ end SharingSettings
 to handle SearchRecord
 	try
 		wait 4
-		SelectingQMSProcess
+		// SelectingQMSProcess
 		//	Put "Deviation" into global RecordType
 		Click text:"QMS Processes", waitFor:60,SearchRectangle:ScreenPart("TopLeftQuadrant")
 		
@@ -2094,7 +2099,7 @@ to handle SearchRecord
 		click text:global RecordType, SearchRectangle:[bottomLeft of Imagerectangle(text:"QMS Processes",SearchRectangle:ScreenPart("TopLeftQuadrant"))+[-25,0],imagelocation(text:"QMS Processes",SearchRectangle:ScreenPart("TopLeftQuadrant"))+[163,223]],waitfor:50
 
 		wait 4
-		click text:"All",waitfor:100,searchrectangle:[RemoteScreenSize()*[0,0.05],RemoteScreenSize()*[0.08,0.2]]
+		click text:"All",waitfor:100,searchrectangle:[RemoteScreenSize()*[0,0.05],RemoteScreenSize()*[0.08,0.3]]
 		wait 2
 		(*Put "List of "&global RecordType&"s should be displayed" into global Vstep
 		Log global Vstep
@@ -2722,7 +2727,7 @@ to handle ImplementationActionTobeCompleted
 		wait 3
 		if global IACverdict is "ActionCompleted"
 			click text:"Action Complete",SearchRectangle:ScreenPart("Center")
-			click imagelocation(text:"Comments",searchrectangle:ScreenPart("BottomHalf"))+[120,0]
+			click imagelocation(text:"Comments",searchrectangle:ScreenPart("Center"))+[120,0]
 			TypeText "Testing"
 			TypeText tabKey
 			TypeText"TestingActionComplete" --global IACompletionSummary
@@ -2793,7 +2798,7 @@ to handle ReviewTheImplementationOfTheChange
 			log global DMEffectiveness
 			///////DemonstratesEffectiveness_Yes DemonstratesEffectiveness_No
 			if global DMEffectiveness is "Yes"
-				click text:"Yes",SearchRectangle:ScreenPart("BottomLeftQuadrant")
+				click text:"Yes",SearchRectangle:ScreenPart("BottomHalf")
 				wait 3
 				ScrollWheelDown 9
 				//PostFunctionApproversRequired_yes PostFunctionApproversRequired_No
@@ -2925,7 +2930,7 @@ Put "Yes" into global QPAdemonstrateEffectiveness*)
 			Put "Yes" into global QPAdemonstrateEffectiveness
 			///
 			if global QPAdemonstrateEffectiveness is "Yes"
-				click text:"Yes",SearchRectangle:ScreenPart("BottomLeftQuadrant")
+				click text:"Yes",SearchRectangle:ScreenPart("BottomHalf")
 				wait 3
 				
 				Click imageName:"Complete", waitFor:120
@@ -2948,9 +2953,9 @@ Put "Yes" into global QPAdemonstrateEffectiveness*)
 			Log global Vstep
 			CaptureAtLog
 			
-		else if global QPAverdict contains "Include"
+		else if global QPAverdict contains "Include Function"
 			//click text:"Include",SearchRectangle:ScreenPart("Center")
-			Click item 2 of everyimagelocation(text:"include", waitFor:50,searchrectangle:ScreenPart("Center"))
+			Click text:"include Function", waitFor:50,searchrectangle:ScreenPart("Center")
 			//Click item2 of EveryImageLocation("include"), waitFor:60
 			TypeText tabKey
 			Typetext"TestReject"
@@ -3122,7 +3127,7 @@ to handle SearchRecords_With_State State
 				Put "Record General screen displayed and"&" life cycle state should be in "&State&" and life cycle stage should be in "&State into global Vstep
 				Log global Vstep
 				W_App_CommonHandlers.CaptureAtLog
-				if imagefound(text:"General Information",SearchRectangle:[RemoteScreenSize()*[0,0.25],RemoteScreenSize()*[0.3,5]])
+				if imagefound(text:"General Information",SearchRectangle:[RemoteScreenSize()*[0,0.2],RemoteScreenSize()*[0.3,5]])
 					click foundimagelocation()
 				else if imagefound(text:"Details",SearchRectangle:[RemoteScreenSize()*[0,0.25],RemoteScreenSize()*[0.3,5]])
 					click foundimagelocation()
@@ -8722,7 +8727,7 @@ end VerifyRecordDetailsSection
 
 //VerifyErrorPromptForNotRaising_IA
 to handle VerifyErrorPromptForNotRaising_IA
-	if ImageFound(text:"least one record exists", waitFor:120,searchrectangle:ScreenPart("Center"))
+	if ImageFound(text:"Validate that: Implementation Actions: At least", waitFor:120,searchrectangle:ScreenPart("Center")) and  if ImageFound(text:"one record exists", waitFor:120,searchrectangle:ScreenPart("Center"))
 		Put "ErrorPupupDisplayedAsExpected" into global Vstep
 		Log global Vstep
 		CaptureAtLog
@@ -8795,8 +8800,7 @@ to handle CreateRiskAssessment
 		Click ImageLocation(text:"Risk Response",SearchRectangle:ScreenPart("Center"))+[100,0]
 		Typetext"Test"
 		wait 1
-		//click item 2 of everyimagelocation( text:"Save",waitFor:120,SearchRectangle:ScreenPart("Center"))
-		Click imageName:"Save", waitFor:120
+		click item 2 of everyimagelocation( text:"Save",waitFor:120,SearchRectangle:ScreenPart("Center"))
 		
 		Put "Risk Assessment Created successfully" into global Vstep
 		Log global Vstep
@@ -9023,6 +9027,7 @@ end OpenChildRecord_withObjectReference
 
 //OpenChildRecord_withRecordIDReference
 to handle OpenChildRecord_withRecordIDReference
+
 	try
 		waitfor 120,text:"Show in tab",Searchrectangle:ScreenPart("TopHalf")
 		
@@ -10197,6 +10202,45 @@ to handle FunctionApprovalOfChangeControl_second
 		//
 	End try
 end FunctionApprovalOfChangeControl_second
+
+to handle FunctionApprovalOfChangeControl_second_CCPL
+try
+		Put "Approved" into global FAverdict
+		click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
+		wait 3
+		if global FAverdict is "Approved"
+			Click text:"Approved", waitFor:120
+			click imagelocation(text:"Comments",searchrectangle:ScreenPart("Center"))+[120,0]
+			TypeText"testing"
+			Click ImageLocation(text:"User Name",SearchRectangle:ScreenPart("BottomHalf"))+[0,30]
+			TypeText global PFAUsername
+			
+			wait 3
+			//Click ImageLocation(text:"Password",SearchRectangle:ScreenPart("Center"))+[0,30]
+			TypeText tabKey
+			TypeText global PFAPassword
+			wait 3
+			Click imageName:"Complete", waitFor:120
+			wait 10
+			Put "FunctionApproverApprovedAssessment" into global Vstep
+			Log global Vstep
+			CaptureAtLog
+			
+			
+		else
+			Put "ApprovedandRejectedVerdictfieldsAreNotThere" into global Vstep
+			Logerror global Vstep
+			CaptureAtLog
+			
+		end if
+		
+	Catch theException
+		LogError theException
+		CaptureAtLog
+		//
+	End try
+
+end FunctionApprovalOfChangeControl_second_CCPL
 
 to handle FAFinalApproval_second
 	try
@@ -11392,7 +11436,7 @@ end CannotCompleteTask
 
 //LoginToApplication_FA_fourth
 to handle LoginToApplication_FA_fourth
-	LoginToApplication "Function.cc.4.N.UAT@sb-rb.com","rbQone@1test"
+	LoginToApplication "Function.cc.2.H@sb-reckitt.com","rbQone@3test"
 end LoginToApplication_FA_fourth
 
 //ReassignFAByOtherFA
@@ -11401,7 +11445,7 @@ to handle ReassignFAByOtherFA
 	AssignUser_Teams_reassgnFA "Health CC 2 Function Approver" , "Function Approver"
 	
 end ReassignFAByOtherFA
-
+ 
 to handle AssignUser_Teams_reassgnFA UserFirstName,Role
 	
 	try
@@ -11413,7 +11457,7 @@ to handle AssignUser_Teams_reassgnFA UserFirstName,Role
 		//click text:"Manage Team"
 		wait 5
 		(*put "Function Approver" into Role*)
-		Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[90,33]
+		Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[150,45]
 		wait 5
 		Typetext controlkey,a
 		Typetext backspace
@@ -11461,7 +11505,7 @@ to handle VerifyErrorMessage_NotToAddSameUser
 
 	//Click item 2 of everyimagelocation(text:"Save", waitFor:120)
 	//if ImageFound(text:"Function", waitFor:60)and if ImageFound(Text:"Approvers")
-		if ImageFound(text:"Function", waitFor:20,SearchRectangle:ScreenPart("Center")) and if ImageFound(text:"Approvers", waitFor:20,SearchRectangle:ScreenPart("Center") )and if ImageFound(text:"must contain users", waitFor:20,SearchRectangle:ScreenPart("Center")) 
+		if ImageFound(text:"Function", waitFor:20,SearchRectangle:ScreenPart("Center")) and if ImageFound(text:"Approver", waitFor:20,SearchRectangle:ScreenPart("Center") )and if ImageFound(text:"must contain users", waitFor:20,SearchRectangle:ScreenPart("Center")) 
 		Put "Error message displayed" into global Vstep
 		Log global Vstep
 		W_App_CommonHandlers.CaptureAtLog
@@ -11581,7 +11625,7 @@ to handle PrepareImpactAssessmentActionPlan_VerifyMandatoryFields
 	
 end PrepareImpactAssessmentActionPlan_VerifyMandatoryFields
 
-PrepareImpactAssessmentActionPlan_Verdict
+
 to handle PrepareImpactAssessmentActionPlan_Verdict
 	try
 		click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("Center"))+[120,0]
@@ -11612,7 +11656,7 @@ to handle PrepareImpactAssessmentActionPlan_Verdict
 end PrepareImpactAssessmentActionPlan_Verdict
 
 to handle PrepareImpactAssessmentActionPlan_Verdict_CCPL
-	try
+try
 		click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("BottomHalf"))+[120,30]
 		
 		typetext"testing"
@@ -11638,8 +11682,36 @@ to handle PrepareImpactAssessmentActionPlan_Verdict_CCPL
 		CaptureAtLog
 		//
 	End try
-end PrepareImpactAssessmentActionPlan_Verdict_CCPL
-
+ end PrepareImpactAssessmentActionPlan_Verdict_CCPL
+ 
+ to handle PrepareImpactAssessmentActionPlan_Verdict_CCPL_withoutFA
+ try
+		click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("BottomHalf"))+[120,30]
+		
+		typetext"testing"
+		wait 2
+		//Click imageName:"ReasonforClosingNotProgressed", waitFor:20
+		Typetext tabKey
+		//Click imageName:"ReasonforClosingNotProgressed_textbox", waitFor:10
+		
+		wait 3
+		Typetext global ReasonForClosing
+		Typetext downArrow, return
+		wait 10
+		CaptureAtLog
+		Click imageName:"complete", waitFor:50
+		wait 10
+		CaptureAtLog
+		Put "CloseChangeControlChangeNotRequired" into global Vstep
+		Log global Vstep
+		
+		
+	Catch theException
+		LogError theException
+		CaptureAtLog
+		//
+	End try
+ end PrepareImpactAssessmentActionPlan_Verdict_CCPL_withoutFA
 to handle CreateCC_Hygiene
 	(*try
 		wait 3
@@ -11974,8 +12046,7 @@ to handle CM_DateDueExtension_withoutVerification
 
 	try
 		NavigateToSectionFromLeftPane"General Information"
-		//put ReadText(topRight of ImageRectangle(text:"Date Due",searchrectangle:ScreenPart("Center")),ImageLocation(text:"Date Due",searchrectangle:ScreenPart("Center"))+[120,25]) into ExistingDateDue
-		put ReadText(topRight of ImageRectangle(text:"Date Due",searchrectangle:ScreenPart("Center") )+[10,0],ImageLocation(text:"Date Due",searchrectangle:ScreenPart("Center"))+[120,25]) into ExistingDateDue
+		put ReadText(topRight of ImageRectangle(text:"Date Due",searchrectangle:ScreenPart("Center")),ImageLocation(text:"Date Due",searchrectangle:ScreenPart("Center"))+[120,25]) into ExistingDateDue
 		Log ExistingDateDue
 		split ExistingDateDue by " "
 		put item 1 of ExistingDateDue into ExistingDateDue_Day
@@ -12024,9 +12095,63 @@ to handle CM_DateDueExtension_withoutVerification
 	
 end CM_DateDueExtension_withoutVerification
 
+to handle CM_DateDueExtension_withoutVerification_CCPL
+
+	try
+		NavigateToSectionFromLeftPane"General Information"
+		//put ReadText(topRight of ImageRectangle(text:"Date Due",searchrectangle:ScreenPart("Center")),ImageLocation(text:"Date Due",searchrectangle:ScreenPart("Center"))+[120,25]) into ExistingDateDue
+          put ReadText(topRight of ImageRectangle(text:"Date Due",searchrectangle:ScreenPart("Center") )+[10,0],ImageLocation(text:"Date Due",searchrectangle:ScreenPart("Center"))+[120,25]) into ExistingDateDue	
+	Log ExistingDateDue
+		split ExistingDateDue by " "
+		put item 1 of ExistingDateDue into ExistingDateDue_Day
+		//Log ExistingDateDue_Day
+		put item 2 of ExistingDateDue into ExistingDateDue_Month
+		//Log ExistingDateDue_Month
+		put item 3 of ExistingDateDue into ExistingDateDue_Year
+		//Log ExistingDateDue_Year
+		put ExistingDateDue_Day+1 into NewDateDue_Day
+		//Log NewDateDue_Day
+		
+		put NewDateDue_Day&&ExistingDateDue_Month&&ExistingDateDue_Year into global NewDateDue
+		//Log NewDateDue
+		// need to impl script to handle date after 28,30,31 feb,...
+		
+		
+		
+		NavigateToSectionFromLeftPane"Date Due Amendments"
+		click text:"Create",SearchRectangle:ScreenPart("TopLeftQuadrant")
+		WaitFor 120, text:"Justification for",SearchRectangle:ScreenPart("BottomHalf")
+		click ImageLocation(text:"Date Due Changed to")+[120,0]
+		wait 1
+		typetext global NewDateDue
+		typetext tabkey
+		typetext "delivery timing"
+		wait 1
+		typetext downArrow
+		typetext return
+		typetext tabkey
+		
+		typetext"Test"
+		click item 2 of everyimagelocation(text:"Save",searchrectangle:Screenpart("BottomHalf"))
+		wait 10
+		// Put "29 Mar 2021" into NewDateDue
+		put "DateDueExtensionCreatedSuccessfully" into global Vstep
+		Log global Vstep
+		CaptureAtLog
+		
+		
+		
+	Catch theException
+		LogError theException
+		W_App_CommonHandlers.CaptureAtLog
+		
+	End try	
+	
+end CM_DateDueExtension_withoutVerification_CCPL
+
 //VerifyDateDutChanged_From_and_To
 to handle VerifyDateDutChanged_From_and_To
-
+     log global NewDateDue
 	click ImageLocation(text:"Date Due Changed to")
 	if ImageFound(text: global NewDateDue, waitFor:120,searchrectangle:[ImageLocation(text:"Date Due Changed to")+[-125,0],ImageLocation(text:"Date Due Changed to")+[180,200]])
 		put "DateDueExtensionUpdatedSuccessfully" into global Vstep
@@ -12057,7 +12182,9 @@ to handle SubmitActionForApproval_Hygiene
 			if global FA_Require_Not is "Yes"
 				click text:"Yes"
 			else
-				click imageName:"No"
+				//click imageName:"No"
+				click imagelocation(text:"Yes", waitFor:100,SearchRectangle:ScreenPart("Center"))+[40,0](*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
+			
 			end if
 			Click imageName:"Complete", waitFor:120
 			
@@ -13236,6 +13363,33 @@ to handle PrepareImpactAssessmentActionPlan_VerdictwithFA
 	
 end PrepareImpactAssessmentActionPlan_VerdictwithFA
 
+to handle PrepareImpactAssessmentActionPlan_VerdictwithFA_CCPL
+
+	//click imagelocation(text:"Yes",waitfor:120,searchrectangle:ScreenPart("Center"))
+	click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("BottomHalf"))+[120,30]
+		
+	typetext"testing"
+	wait 2
+	//Click imageName:"ReasonforClosingNotProgressed", waitFor:120
+	Typetext tabKey
+	//Click imageName:"ReasonforClosingNotProgressed_textbox", waitFor:120
+	
+	wait 3
+	Typetext global ReasonForClosing
+	Typetext downArrow, return
+	
+	wait 3
+	
+	Click imageName:"complete", waitFor:10
+	
+	Put "CloseChangeControlChangeNotRequired" into global Vstep
+	Log global Vstep
+	
+	CaptureAtLog
+	
+	
+end PrepareImpactAssessmentActionPlan_VerdictwithFA_CCPL
+
 to handle PrepareImpactAssessmentActionPlan_Verdict_withoutFA
 
 	click imagelocation(text:"Yes",waitfor:120,searchrectangle:ScreenPart("Center"))+[40,0] //Clicking No
@@ -13745,6 +13899,37 @@ to handle CreateAI_and_IA
 	SearchRecord
 	
 end CreateAI_and_IA
+
+to handle CreateAI_and_IA_SecondRecord
+
+	OpenDependentRecord1
+	VerifyLifeCycleState_IMPACTASSESSMENTACTIONPLANNING
+	
+	CreateAssessmentItem
+	OpenRecord_AI_Draft
+	//VerifyLifeCycleState_Draft
+	//StartImpactAssessment
+	AssignUser_Teams_Assessor
+	VerifyLifeCycleState_PENDINGASSESSMENT
+	LogOut
+	
+	LoginToApplication_Assessor
+	OpenDependentRecord1
+	OpenRecord_AI_PENDINGASSESSMENT
+	VerifyLifeCycleState_PENDINGASSESSMENT
+	AssessmentOfChangeControl
+	VerifyLifeCycleState_CLOSEDCOMPLETE
+	LogOut
+	
+	LoginToApplication_CC
+	OpenDependentRecord1
+	CreateImplementationAction
+	OpenRecord_IA_Draft
+	VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	OpenDependentRecord1
+	
+end CreateAI_and_IA_SecondRecord
 
 to handle PrepareImpactAssessmentActionPlan_VerifyErrorToAddImpactedProduct
 
@@ -14280,6 +14465,14 @@ to handle ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed
 	
 end ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed
 
+to handle ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_CCPL
+
+	OpenDependentRecord2
+	VerifyLifeCycleState_PENDINGFUNCTIONCLOSUREAPPROVAL
+	FunctionApprovalOfCC_Closure_ChangeNotProgressed
+	VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
+	
+end ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_CCPL
 to handle ProgressTo_ChangeNotProgressed
 
 	W_App_CommonHandlers.SearchRecord
@@ -14289,6 +14482,21 @@ to handle ProgressTo_ChangeNotProgressed
 	
 end ProgressTo_ChangeNotProgressed
 
+to handle ProgressTo_ChangeNotProgressed_CCPL_Hygiene
+
+	W_App_CommonHandlers.OpenDependentRecord2
+	W_App_CommonHandlers.VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
+	W_App_CommonHandlers.QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
+	W_App_CommonHandlers.VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
+	
+end ProgressTo_ChangeNotProgressed_CCPL_Hygiene
+
+to handle ProgressTo_ChangeNotProgressed_CCPL
+W_App_CommonHandlers.SearchRecord
+	W_App_CommonHandlers.VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
+	W_App_CommonHandlers.QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
+	W_App_CommonHandlers.VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
+end ProgressTo_ChangeNotProgressed_CCPL 
 to handle CreateCC_IAandAP_AssignQA_Hygiene
 
 	SelectingQMSProcess
@@ -14309,12 +14517,20 @@ to handle LoginToApplication_CC_VerifyMandatoryFields
 	
 end LoginToApplication_CC_VerifyMandatoryFields
 
+
+to handle LoginToApplication_CC_VerifyMandatoryFields_CCPL
+    OpenDependentRecord2
+	PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithFA
+end LoginToApplication_CC_VerifyMandatoryFields_CCPL
+
 to handle PrepareImpactAssessmentActionPlan_Verdict_withFA
 
 	PrepareImpactAssessmentActionPlan_VerdictwithFA
 	VerifyLifeCycleState_PENDINGFUNCTIONCLOSUREAPPROVAL
 	
 end PrepareImpactAssessmentActionPlan_Verdict_withFA
+
+
 
 to handle PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed
 
@@ -14324,6 +14540,16 @@ to handle PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgr
 	(*PrepareImpactAssessmentActionPlan_Verdict*)
 	
 end PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed
+
+to handle PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed_Second
+
+	OpenDependentRecord1
+	VerifyLifeCycleState_IMPACTASSESSMENTACTIONPLANNING
+	//PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
+	PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithoutFA
+	(*PrepareImpactAssessmentActionPlan_Verdict*)
+	
+end PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed_Second
 
 to handle SearchRecord_Create_2AI_1IA
 
@@ -14655,6 +14881,7 @@ to handle ImplementTheChange_PendingFunctionClosureApproval
 	
 end ImplementTheChange_PendingFunctionClosureApproval
 
+
 to handle ProgressTo_PendingFunctionClosureApproval_ChangeNotImplemented
 
 	SearchRecord
@@ -14662,7 +14889,7 @@ to handle ProgressTo_PendingFunctionClosureApproval_ChangeNotImplemented
 	FunctionApprovalOfCC_Closure_ChangeNotImplemented
 	VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
 	
-end ProgressTo_PendingFunctionClosureApproval_ChangeNotImplemented
+end ProgressTo_PendingFunctionClosureApproval_ChangeNotImplemented 
 
 to handle ProgressTo_ChangeNotImplemented
 
@@ -14750,7 +14977,7 @@ to handle Logout_ProgressIA_ToClosedComplete
 	ImplementationActionTobeCompleted
 	VerifyLifeCycleState_CLOSEDCOMPLETE
 	LogOut
-	LoginToApplication_CC
+	//LoginToApplication_CC
 	
 end Logout_ProgressIA_ToClosedComplete
 
@@ -14887,6 +15114,7 @@ to handle LoginToApplication_CC_ChangeCoordinatorReview
 
 	LoginToApplication_CC
 	SearchRecord
+	
 	VerifyLifeCycleState_CHANGECOORDINATORREVIEW
 	
 end LoginToApplication_CC_ChangeCoordinatorReview
@@ -14945,7 +15173,7 @@ to handle SearchRecord_Create2AIs_and_IA_FillProduct_and_LocationInformation
 	SearchRecord
 	NavigateToAffectedLocationInformation
 	CreateAffectedLocationInformation
-	//Add_ImpactedProduct
+	Add_ImpactedProduct
 	NavigateToImpactAssessmentOutputSection
 	EditImpactAssessmentOutput
 	
@@ -15639,8 +15867,7 @@ end CreateAI_and_IA_PendingFunctionApproval
 	EditImpactAssessmentOutput
 	PrepareImpactAssessmentActionPlan_CCPL
 	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
-end CreateAI_and_IA_PendingFunctionApproval_CCPL
- 
+ end CreateAI_and_IA_PendingFunctionApproval_CCPL
 to handle Approve_By_1FA
 
 	SearchRecord
@@ -15652,52 +15879,12 @@ end Approve_By_1FA
 
 to handle Approve_By_2FA
 
-SearchRecord
-VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
-FunctionApprovalOfChangeControl_second_CCPL
-VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
-
+	SearchRecord
+	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+	FunctionApprovalOfChangeControl_second_CCPL
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+	
 end Approve_By_2FA
-to handle FunctionApprovalOfChangeControl_second_CCPL
-try
-Put "Approved" into global FAverdict
-click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
-wait 3
-if global FAverdict is "Approved"
-Click text:"Approved", waitFor:120
-click imagelocation(text:"Comments",searchrectangle:ScreenPart("Center"))+[120,0]
-TypeText"testing"
-Click ImageLocation(text:"User Name",SearchRectangle:ScreenPart("BottomHalf"))+[0,30]
-TypeText global PFAUsername
-
-wait 3
-//Click ImageLocation(text:"Password",SearchRectangle:ScreenPart("Center"))+[0,30]
-TypeText tabKey
-TypeText global PFAPassword
-wait 3
-Click imageName:"Complete", waitFor:120
-wait 10
-Put "FunctionApproverApprovedAssessment" into global Vstep
-Log global Vstep
-CaptureAtLog
-
-
-else
-Put "ApprovedandRejectedVerdictfieldsAreNotThere" into global Vstep
-Logerror global Vstep
-CaptureAtLog
-
-end if
-
-Catch theException
-LogError theException
-CaptureAtLog
-//
-End try
-
-
-
-end FunctionApprovalOfChangeControl_second_CCPL
 
 to handle SearchRecord_IAAuthorised
 
@@ -15752,12 +15939,9 @@ to handle FunctionApprovalOfChangeControl_PendingQualityApproval
 	
 end FunctionApprovalOfChangeControl_PendingQualityApproval
 
-(*to handle ProgressIA_ToClosedComplete
+to handle ProgressIA_ToClosedComplete_CCPL
 
-	SearchRecord
-	VerifyLifeCycleState_INIMPLEMENTATION
-	OpenRecord_IA_WORKINPROGRESS
-	VerifyLifeCycleState_WORKINPROGRESS
+	
 	LogOut
 	
 	LoginToApplication_ActionOwner
@@ -15768,7 +15952,7 @@ end FunctionApprovalOfChangeControl_PendingQualityApproval
 	VerifyLifeCycleState_CLOSEDCOMPLETE
 	LogOut
 	
-end ProgressIA_ToClosedComplete*)
+end ProgressIA_ToClosedComplete_CCPL
 
 to handle SearchRecord_PENDINGFUNCTIONPOSTAPPROVAL
 
@@ -16070,10 +16254,10 @@ to handle SearchRecord_Fill_Product_AndLocationInformation
 	SearchRecord
 	NavigateToAffectedLocationInformation
 	CreateAffectedLocationInformation
-	//Add_ImpactedProduct
+	Add_ImpactedProduct
 	NavigateToImpactAssessmentOutputSection
 	EditImpactAssessmentOutput
-	PrepareImpactAssessmentActionPlan_CCPL
+	PrepareImpactAssessmentActionPlan
 	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
 	
 end SearchRecord_Fill_Product_AndLocationInformation
@@ -17184,7 +17368,8 @@ end OpenIA_Assign_QAAndActionOwner
 
 to handle PrepareImpactAssessmentActionPlan_CLOSEDCHANGENOTPROGRESSED
 	
-	PrepareImpactAssessmentActionPlan_Verdict
+	//PrepareImpactAssessmentActionPlan_Verdict
+	PrepareImpactAssessmentActionPlan_Verdict_CCPL
 	VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
 	
 end PrepareImpactAssessmentActionPlan_CLOSEDCHANGENOTPROGRESSED
@@ -17265,6 +17450,57 @@ to handle ProgressFrom_IAandAP_ToInImplementation
 	
 end ProgressFrom_IAandAP_ToInImplementation
 
+to handle ProgressFrom_IAandAP_ToInImplementation_CCPL
+
+	SearchRecord
+	VerifyLifeCycleState_IMPACTASSESSMENTACTIONPLANNING
+	CreateAssessmentItem
+	OpenRecord_AI_Draft
+	//VerifyLifeCycleState_Draft
+	//StartImpactAssessment
+	AssignUser_Teams_Assessor
+	VerifyLifeCycleState_PENDINGASSESSMENT
+	LogOut
+	
+	LoginToApplication_Assessor
+	SearchRecord 
+	OpenRecord_AI_PENDINGASSESSMENT
+	VerifyLifeCycleState_PENDINGASSESSMENT
+	AssessmentOfChangeControl
+	VerifyLifeCycleState_CLOSEDCOMPLETE
+	LogOut
+	
+	LoginToApplication_CC
+	SearchRecord
+	CreateImplementationAction
+	OpenRecord_IA_Draft
+	VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	SearchRecord
+	NavigateToAffectedLocationInformation
+	CreateAffectedLocationInformation
+	//Add_ImpactedProduct
+	NavigateToImpactAssessmentOutputSection
+	EditImpactAssessmentOutput
+	PrepareImpactAssessmentActionPlan_CCPL
+	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+	LogOut
+	LoginToApplication_FA
+	SearchRecord
+	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+	FunctionApprovalOfChangeControl
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+	LogOut
+	LoginToApplication_QA
+	SearchRecord
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+	QualityApprovalOfChangeControl
+	VerifyLifeCycleState_INIMPLEMENTATION
+	LogOut
+	
+end ProgressFrom_IAandAP_ToInImplementation_CCPL
+
+
 to handle ProgressIATo_WorkInProgress_SearchRecord_CC
 
 	SearchRecord 
@@ -17290,6 +17526,32 @@ to handle OpenRecord_ProgressIATo_PendingQualityApproval
 	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
 	
 end OpenRecord_ProgressIATo_PendingQualityApproval
+
+to handle OpenRecord_ProgressIATo_PendingQualityApproval_CCPL
+	//SearchRecord
+	OpenRecord_IA_Draft
+	//VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	AssignUser_Teams_FA
+	AssignUser_Teams_QA
+	//StartImplementation
+	//VerifyLifeCycleState_Draft
+	SubmitActionForApproval_Hygiene
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+end OpenRecord_ProgressIATo_PendingQualityApproval_CCPL
+
+to handle OpenRecord_ProgressIATo_PendingQualityApproval_CCPL_NoFA
+	//SearchRecord
+	OpenRecord_IA_Draft
+	//VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	//AssignUser_Teams_FA
+	AssignUser_Teams_QA
+	//StartImplementation
+	//VerifyLifeCycleState_Draft
+	SubmitActionForApproval_Hygiene
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+end OpenRecord_ProgressIATo_PendingQualityApproval_CCPL_NoFA
 
 to handle LoginToApplication_CC_ProgressIA_ToClosedComplete
 	
@@ -17428,6 +17690,14 @@ to handle ProgressTo_ChangeNotProgressed_withoutFA
 	
 end ProgressTo_ChangeNotProgressed_withoutFA
 
+to handle ProgressTo_ChangeNotProgressed_withoutFA_CCPL
+
+	OpenDependentRecord1
+	VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
+	QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
+	VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
+	
+end ProgressTo_ChangeNotProgressed_withoutFA_CCPL
 //to handle ProgressIATo_WorkInProgress_SearchRecord_CC
 
 //SearchRecord 
@@ -18120,8 +18390,8 @@ to handle CC_PostFunction_Titles_status
 	
 	Wait 10
 	
-	if ImageFound(text:"Nutrition CC 2 UAT Function", waitFor:50,SearchRectangle:ScreenPart("LeftHalf"))
-	click ImageLocation(text:"Nutrition CC 2 UAT Function",SearchRectangle:ScreenPart("LeftHalf"))
+	if ImageFound(text:"Nutrition CC 2 Function", waitFor:50,SearchRectangle:ScreenPart("LeftHalf"))
+	click ImageLocation(text:"Nutrition CC 2 Function",SearchRectangle:ScreenPart("LeftHalf"))
 	else if ImageFound(text:"CC 2 Function", waitFor:50,SearchRectangle:ScreenPart("LeftHalf"))
 	click ImageLocation(text:"CC 2 Function",SearchRectangle:ScreenPart("LeftHalf"))
 	end if
@@ -27129,93 +27399,6 @@ to handle PrepareImpactAssessmentActionPlan_CCPL
 	
 	
 end PrepareImpactAssessmentActionPlan_CCPL
-
-to handle PrepareImpactAssessmentActionPlan_CCPL_Progress_Prepopulate
-
-try
-	(*Put "ChangeNotRequired" into global PIAverdict
-		Put "Raised In Error" into global ReasonForClosing*)
-		ScrollWheelUp 50
-		click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
-		click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
-		Typetext controlKey,a
-			Typetext backspace
-			Typetext backspace
-			wait 2
-			Typetext global CCPLGBU
-			Typetext downArrow, return
-			click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("Center")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("Center")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("Center"))+[300,100]]*)
-			
-			wait 3
-		if global PIAverdict is "ChangeNotRequired"
-			Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
-			click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("BottomHalf"))+[120,0]
-			
-			typetext"testing"
-			wait 3
-			//Click imageName:"ReasonforClosingNotProgressed", waitFor:20
-			Typetext tabKey
-			//Click imageName:"ReasonforClosingNotProgressed_textbox", waitFor:10
-			wait 2
-			Typetext controlKey,a
-			Typetext backspace
-			Typetext backspace
-			wait 2
-			
-			
-			Typetext global ReasonForClosing
-			Typetext downArrow, return
-			//click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("BottomHalf")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
-			
-			wait 3
-			Put "Change Coordinator Select Verdict as CloseChangeControl/ChangeNotRequired" into global Vstep
-			Log global Vstep
-			
-			CaptureAtLog
-			Click imageName:"complete", waitFor:120
-			wait 10
-			
-			
-			
-		else if global PIAverdict is "SubmitForApproval"
-			click item 2 of everyimagelocation(text:"Submit For Approval",SearchRectangle:ScreenPart("Center"))
-			Typetext tabKey
-			Typetext"testing"
-			(*Click imageName:"ImpactAssessmentConclusionSummary", waitFor:50
-			Typetext "test"*)
-			Typetext tabKey
-			Typetext "test"
-			Typetext tabKey
-			Typetext "test"
-			TypeText tabKey
-			TypeText ControlKey, a
-			Typetext Backspace
-			//TypeText global FormalRiskAssessmentRequired
-			//TypeText downArrow, return
-			TypeText tabKey
-			TypeText ControlKey, a
-			Typetext Backspace
-			TypeText "Low"
-			TypeText downArrow, return
-			put "Change Coordinator Select Verdict as Submit for Approval" into global Vstep
-			Log global Vstep
-			CaptureAtLog
-			Click imageName:"complete", waitFor:120
-			wait 10
-			
-		end if
-		
-	Catch theException
-		Logerror theException
-		CaptureAtLog
-		
-	End try
-	
-
-
-
-end PrepareImpactAssessmentActionPlan_CCPL_Progress_Prepopulate
-
 to handle AssignUser_Teams_Assessor
 
 	AssignUser_Teams global AssessorID,"Assessor"
@@ -27246,7 +27429,7 @@ to handle AssignUser_Teams UserFirstName,Role
 		//click text:"Manage Team"
 		wait 5
 		(*put "Function Approver" into Role*)
-		Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[90,5]
+		Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[90,10]
 		wait 5
 		Typetext controlkey,a
 		Typetext backspace
@@ -28353,14 +28536,14 @@ SearchRecord_CreateAI_ClosedComplete
 end OpenCC_CreateAI_to_ClosedComplete
 
 to handle VerifyError_AtleastOneIA_WhileSendForApproval
-
+LoginToApplication_CC
 SearchRecord
 NavigateToAffectedLocationInformation
 CreateAffectedLocationInformation
-Add_ImpactedProduct
+//Add_ImpactedProduct
 NavigateToImpactAssessmentOutputSection
 EditImpactAssessmentOutput
-PrepareImpactAssessmentActionPlan
+PrepareImpactAssessmentActionPlan_CCPL
 VerifyErrorPromptForNotRaising_IA
 
 end VerifyError_AtleastOneIA_WhileSendForApproval
@@ -28404,16 +28587,16 @@ end FillJustificationReason_To_ClosedChangeNotProgressed_FromIAAP
 
 to handle SearchRecord_CC_Draft_Originator
 
-	Put "Change Control Record ID is"&the suitevariables.RecordId  into global Vstep
+	Put "Change Control Record ID is "& global ChildRecordID1  into global Vstep
 	Log global Vstep
 	
-	Put "Change Control Originator is"&global Originator_Username  into global Vstep
+	Put "Change Control Originator is "& global Originator_Username  into global Vstep
 	Log global Vstep
 	
-	Put "Change Control Change Coordinator is"&global CCUserID  into global Vstep
-	Log global Vstep
+	//Put "Change Control Change Coordinator is"&global CCUserID  into global Vstep
+	//Log global Vstep
 	
-	SearchRecord
+	OpenDependentRecord1
 
 end SearchRecord_CC_Draft_Originator
 
@@ -28421,9 +28604,35 @@ to handle CancelCC_FromDraft_To_ChangeNotProgressed
 
 //AssignToChangeCordinator_Cancel
 AssignToChangeCordinator_Cancel_CCPL
-
 end CancelCC_FromDraft_To_ChangeNotProgressed
+to handle AssignToChangeCordinator_Cancel_CCPL
+try
 
+Click imageName:"CancelImpactAssessment", waitFor:120,searchrectangle:Screenpart("TopRightQuadrant")
+wait 5
+Click Text:"Cancel Change Control", waitFor:120,searchrectangle:Screenpart("TopRightQuadrant")
+//click imagelocation(text:"Cancel",waitfor:60,searchrectangle:ScreenPart("Center"))+[40,0]
+Click imageName:"StartButton", waitFor:120,searchrectangle:Screenpart("Center")
+wait 5
+
+Put"Complaint Coordinator Cancelled Complaint Action" into global Vstep
+Log global Vstep
+W_App_CommonHandlers.CaptureAtLog
+
+
+Catch theException
+Logerror theException
+W_App_CommonHandlers.CaptureAtLog
+
+End try
+
+
+
+VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
+
+
+
+end AssignToChangeCordinator_Cancel_CCPL
 to handle LogOut_Originator_Second
 
 LogOut
@@ -28510,20 +28719,103 @@ SearchRecord_CreateAI_and_IA
 ProgressTo_PendingQualityApproval_Hygiene_CCPL
 
 end ProgressFrom_IAandAP_ToPendingQualityApproval_CCPL
+
 to handle ProgressTo_PendingQualityApproval_Hygiene_CCPL
-
-
 
 SearchRecord
 NavigateToAffectedLocationInformation
 CreateAffectedLocationInformation
-Add_ImpactedProduct
+//Add_ImpactedProduct
 NavigateToImpactAssessmentOutputSection
 EditImpactAssessmentOutput
 PrepareImpactAssessmentActionPlan_CCPL_Hygiene_NoFA
 VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
 
 end ProgressTo_PendingQualityApproval_Hygiene_CCPL
+to handle PrepareImpactAssessmentActionPlan_CCPL_Progress_Prepopulate
+
+
+
+try
+(*Put "ChangeNotRequired" into global PIAverdict
+Put "Raised In Error" into global ReasonForClosing*)
+ScrollWheelUp 50
+click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
+click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
+Typetext controlKey,a
+Typetext backspace
+Typetext backspace
+wait 2
+Typetext global CCPLGBU
+Typetext downArrow, return
+click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("Center")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("Center")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("Center"))+[300,100]]*)
+
+wait 3
+if global PIAverdict is "ChangeNotRequired"
+Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
+click imagelocation(text:"Justification for Closing",searchrectangle:ScreenPart("BottomHalf"))+[120,0]
+
+typetext"testing"
+wait 3
+//Click imageName:"ReasonforClosingNotProgressed", waitFor:20
+Typetext tabKey
+//Click imageName:"ReasonforClosingNotProgressed_textbox", waitFor:10
+wait 2
+Typetext controlKey,a
+Typetext backspace
+Typetext backspace
+wait 2
+
+
+Typetext global ReasonForClosing
+Typetext downArrow, return
+//click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("BottomHalf")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
+
+wait 3
+Put "Change Coordinator Select Verdict as CloseChangeControl/ChangeNotRequired" into global Vstep
+Log global Vstep
+
+CaptureAtLog
+Click imageName:"complete", waitFor:120
+wait 10
+
+
+
+else if global PIAverdict is "SubmitForApproval"
+click item 2 of everyimagelocation(text:"Submit For Approval",SearchRectangle:ScreenPart("Center"))
+Typetext tabKey
+Typetext"testing"
+(*Click imageName:"ImpactAssessmentConclusionSummary", waitFor:50
+Typetext "test"*)
+Typetext tabKey
+Typetext "test"
+Typetext tabKey
+Typetext "test"
+TypeText tabKey
+TypeText ControlKey, a
+Typetext Backspace
+//TypeText global FormalRiskAssessmentRequired
+TypeText downArrow, return
+TypeText tabKey
+TypeText ControlKey, a
+Typetext Backspace
+TypeText "Low"
+TypeText downArrow, return
+put "Change Coordinator Select Verdict as Submit for Approval" into global Vstep
+Log global Vstep
+CaptureAtLog
+Click imageName:"complete", waitFor:120
+wait 10
+
+end if
+
+Catch theException
+Logerror theException
+CaptureAtLog
+
+End try
+
+end PrepareImpactAssessmentActionPlan_CCPL_Progress_Prepopulate
 
 to handle OpenCC_RejectRecordWithFA_VerifyError_AssignFA
 
@@ -28605,39 +28897,6 @@ LoginToApplication_NewQA
 
 end LoginToApplication_QA_second
 
-to handle QualityPostApprovalOfCC_OldQA_VerifyVerdict_NoTask
-
-	try
-		
-		//Click imageName:"QualityPostApprovalofChangeControl", waitFor:50
-		//Click text:"Complete", waitFor:20,Searchrectangle:ScreenPart("TopRightQuadrant")
-		
-		if ImageFound(text:"Approve",searchrectangle:ScreenPart("Center")) and if ImageFound(text:"Reject",searchrectangle:ScreenPart("Center"))
-			Put "Approve and Reject options are present" into global Vstep
-			Logerror global Vstep
-			CaptureAtLog
-		else
-			Put "Approve and Reject options are not present" into global Vstep
-			Log global Vstep
-			CaptureAtLog
-			
-		end if
-		
-	Catch theException
-		LogError theException
-		CaptureAtLog
-		//
-	End try
-	
-	//click text:"Cancel",Searchrectangle:ScreenPart("BottomRightQuadrant"),waitfor:30
-	
-end QualityPostApprovalOfCC_OldQA_VerifyVerdict_NoTask
-
-to handle LoginToApplication_FA_First
-LoginToApplication_FA
-end LoginToApplication_FA_First
-
-
 to handle OpenCC_VerifyOption_To_ApproveOrRejectCC
 
 SearchRecord
@@ -28661,6 +28920,27 @@ VerifyLifeCycleState_PENDINGQUALITYPOSTAPPROVAL
 QualityPostApprovalOfCC_OldQA_VerifyVerdict_NoTask
 
 end OpenCC_VerifyNoOption_To_ApproveOrRejectCC
+
+to handle QualityPostApprovalOfCC_OldQA_VerifyVerdict_NoTask try
+//Click imageName:"QualityPostApprovalofChangeControl", waitFor:50
+//Click text:"Complete", waitFor:20,Searchrectangle:ScreenPart("TopRightQuadrant")
+if ImageFound(text:"Approve",searchrectangle:ScreenPart("Center")) and if ImageFound(text:"Reject",searchrectangle:ScreenPart("Center"))
+Put "Approve and Reject options are present" into global Vstep
+Logerror global Vstep
+CaptureAtLog
+else
+Put "Approve and Reject options are not present" into global Vstep
+Log global Vstep
+CaptureAtLog
+end if
+Catch theException
+LogError theException
+CaptureAtLog
+//
+End try
+//click text:"Cancel",Searchrectangle:ScreenPart("BottomRightQuadrant"),waitfor:30
+end QualityPostApprovalOfCC_OldQA_VerifyVerdict_NoTask
+
 
 to handle QualityPostApprovalOfCC_OldQA_VerifyVerdicts
 
@@ -28774,16 +29054,16 @@ ImplementTheChange_PendingFunctionClosureApproval
 
 end CloseCC_WithFA_To_PendingFunctionClosureApproval
 
-to handle OpenCC_SubmitForApproval_To_PendingQualityClosureApproval
+to handle OpenCC_SubmitForApproval_To_PendingQualityClosureApproval_CCPL
 
 ProgressTo_PendingFunctionClosureApproval_ChangeNotImplemented
 
-end OpenCC_SubmitForApproval_To_PendingQualityClosureApproval
+end OpenCC_SubmitForApproval_To_PendingQualityClosureApproval_CCPL
 
 to handle OpenCC_SubmitForApproval_To_PendingQualityApproval
 SearchRecord
 FunctionApprovalOfChangeControl
-	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
 	
 end OpenCC_SubmitForApproval_To_PendingQualityApproval
 
@@ -28797,6 +29077,8 @@ end OpenCC_ApproveClosure_To_ChangeNotImplemented
 
 to handle WaitMnts_IA_movedTo_ClosedIncomplete
 
+wait 500
+Typetext F5
 NavigateToImplementationAction
 OpenRecord_CLOSEDINCOMPLETE
 
@@ -28867,10 +29149,9 @@ end OpenCC_CreateAIClosedComplete_CreateIA_VerifyDraft
 
 to handle LoginToCC_ProgressCCTo_PendngFunctionApproval
 
-AddFunction_Location_PendingFunctionApproval_CCPL
+AddFunction_Location_PendingFunctionApproval
 
 end LoginToCC_ProgressCCTo_PendngFunctionApproval
-
 
 
 to handle OpenCC_ProgressTo_InImplementation
@@ -28966,6 +29247,10 @@ Approve_By_1FA
 
 end OpenCC_ApproveCC_SecondFA_ToApprove
 
+to handle LoginToApplication_FA_First
+LoginToApplication_FA
+end LoginToApplication_FA_First
+
 to handle OpenCC_ApproveCC_To_PendingQualityApproval
 
 Approve_By_2FA
@@ -28983,7 +29268,7 @@ SearchRecord_CreateAI_and_IA_FillProduct_and_LocationInformation
 end OpenCC_CreateAIClosedComplete_CreateIA_VerifyDraft *)
 
 to handle ProgressCC_To_PendingFunctionApproval
-
+//PrepareImpactAssessmentActionPlan_PendingFunctionApproval
 PrepareImpactAssessmentActionPlan_PendingFunctionApproval_CCPL
 
 end ProgressCC_To_PendingFunctionApproval
@@ -29030,7 +29315,7 @@ end OpenCC_CreateDateDue_VerifyError_Without_JustificationReason
 
 to handle FillJustificationReason_CreatedDateDue
 
-CM_DateDueExtension_withoutVerification
+CM_DateDueExtension_withoutVerification_CCPL
 
 end FillJustificationReason_CreatedDateDue
 
@@ -29092,8 +29377,8 @@ end ProgressIA_To_ClosedComplete
 
 to handle WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordinatorReview
 
-SearchRecord_CHANGECOORDINATORREVIEW
-
+wait 100
+LoginToApplication_CC_ChangeCoordinatorReview
 end WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordinatorReview
 
 
@@ -29102,8 +29387,8 @@ end WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordinatorReview
 //E2EQMS-TS018-FP-PL CC
 to handle OpenCC_ProgressCC_To_InImplementation_FromIAAP
 
-ProgressFrom_IAandAP_ToInImplementation
-
+//ProgressFrom_IAandAP_ToInImplementation
+ProgressFrom_IAandAP_ToInImplementation_CCPL
 end OpenCC_ProgressCC_To_InImplementation_FromIAAP
 
 to handle LoginToCC_OpenCC_CreateTwoIAs
@@ -29132,8 +29417,8 @@ end OpenFirstIA_ProgressIA_To_WorkInProgress
 
 to handle OpenSecondIA_AssignAOFAQA_ProgressIA_To_PendingQualityApproval
 
-OpenRecord_ProgressIATo_PendingQualityApproval
-
+//OpenRecord_ProgressIATo_PendingQualityApproval
+OpenRecord_ProgressIATo_PendingQualityApproval_CCPL_NoFA
 end OpenSecondIA_AssignAOFAQA_ProgressIA_To_PendingQualityApproval
 
 to handle OpenSecondIA_ProgressIA_To_WorkInProgress
@@ -29147,7 +29432,7 @@ end OpenSecondIA_ProgressIA_To_WorkInProgress
 
 //E2EQMS-TS021-FP-PL CC
 to handle OpenCC_CreateAIComplete_Create3IAAssignAOs
- ImplementtheChange
+
 SearchRecord_CreateAI_and_3IAs
 
 end OpenCC_CreateAIComplete_Create3IAAssignAOs
@@ -29176,18 +29461,21 @@ end OpenCC_ReopenOther_ClosedCompleteIA_ByQA
 //E2EQMS-TS022-FP-PL CC		//need to run job
 to handle OpenCC_CreateAIComplete_CreateIA_AssignAO
 
-SearchRecord_CreateAI_and_IA_FillProduct_and_LocationInformation
-
+//SearchRecord_CreateAI_and_IA_FillProduct_and_LocationInformation
+SearchRecord_CreateAI_and_IA
 end OpenCC_CreateAIComplete_CreateIA_AssignAO
 
 to handle OpenCC_ProgressIA_To_ClosedComplete
 
-ProgressIA_ToClosedComplete
-
+//ProgressIA_ToClosedComplete
+Logout_ProgressIA_ToClosedComplete
 end OpenCC_ProgressIA_To_ClosedComplete
 
-to handle LoginCC_WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
 
+
+
+to handle LoginCC_WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
+wait 100
 LoginToApplication_CC_ChangeCoordinatorReview
 
 end LoginCC_WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
@@ -29214,16 +29502,27 @@ end ProgressCC_WithoutPFA_To_pendingQualityPostApproval
 
 
 //E2EQMS-TS025-FP-PL CC		//need to run job
-to handle OpenCC_CreateAIComplete_CreateIA_AssignAO
+(*to handle OpenCC_CreateAIComplete_CreateIA_AssignAO
 
 SearchRecord_CreateAI_and_IA_FillProduct_and_LocationInformation
 
-end OpenCC_CreateAIComplete_CreateIA_AssignAO
+end OpenCC_CreateAIComplete_CreateIA_AssignAO*)
 
 to handle ProgressCC_To_InImplementation_From_IAAP
 
-PrepareImpactAssessmentActionPlan_InImplementation
-
+//PrepareImpactAssessmentActionPlan_InImplementation
+AddFunction_Location_PendingFunctionApproval_CCPL
+Logout
+LoginToApplication_FA
+SearchRecord
+FunctionApprovalOfChangeControl
+	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
+	LogOut
+	LoginToApplication_QA
+	SearchRecord
+QualityApprovalOfChangeControl
+	VerifyLifeCycleState_INIMPLEMENTATION
+LogOut
 end ProgressCC_To_InImplementation_From_IAAP
 
 to handle LoginToCC_OpenCC_ProgressIA_To_ClosedComplete
@@ -29233,7 +29532,7 @@ LoginToApplication_CC_ProgressIA_ToClosedComplete
 end LoginToCC_OpenCC_ProgressIA_To_ClosedComplete
 
 to handle WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
-
+wait 100
 LoginToApplication_CC_ChangeCoordinatorReview
 
 end WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
@@ -29245,6 +29544,7 @@ CreateImplementationAction
 end CreateIA_In_ChangeCoordinatorReview
 
 to handle WaitMnts_VerifyCC_AutomaticallyRegressToInImplementation
+Wait 200
 SearchRecord
 VerifyLifeCycleState_INIMPLEMENTATION
 
@@ -29274,6 +29574,13 @@ SearchRecord_IA_WORKINPROGRESS
 
 end OpenNewIA_By_ActionOwner
 
+
+to handle SearchRecord_IA_WORKINPROGRESS
+SearchRecord
+OpenRecord_IA_WORKINPROGRESS
+end SearchRecord_IA_WORKINPROGRESS
+
+
 to handle CompleteIA_To_ClosedComplete_ByAO
 
 ImplementationActionTobeCompleted_CLOSEDCOMPLETE
@@ -29292,9 +29599,7 @@ end OpenCC_CreateAIComplete_Create2IAAssignAOs
 
 to handle VerifyCC_AutomaticallyRegressToInImplementation
 
-SearchRecord
-wait 300
-VerifyLifeCycleState_INIMPLEMENTATION
+SearchRecord_InImplementation
 
 end VerifyCC_AutomaticallyRegressToInImplementation
 
@@ -29304,8 +29609,9 @@ end VerifyCC_AutomaticallyRegressToInImplementation
 //E2EQMS-TS039-FP-PL-CC		//need to run job
 to handle ProgressCC_To_PendingQualityPostApproval_WithoutFA
 
-ImplementTheChange_PendingQualityPostApproval
-
+//ImplementTheChange_PendingQualityPostApproval
+	ReviewTheImplementationOfTheChange
+	VerifyLifeCycleState_PENDINGQUALITYPOSTAPPROVAL
 end ProgressCC_To_PendingQualityPostApproval_WithoutFA
 
 to handle OpenCC_PQPA
@@ -29604,84 +29910,186 @@ end PrepareImpactAssessmentActionPlan_CCPL_Hygiene_NoFA
 
 //E2EQMS-TS008-FP-PL CC
 to handle OpenCC_AssignFA_CloseCC_ConfirmJustificationReasonMandatory
-         SearchRecord
-         AssignUser_Teams_FA
+
 //PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_withFA
+SearchRecord
+AssignUser_Teams_FA
 OpenRecord_PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
-//PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
+
 end OpenCC_AssignFA_CloseCC_ConfirmJustificationReasonMandatory
 
-to handle PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
-//Click imageName:"complete", waitFor:120
-click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
-click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
-Typetext controlKey,a
-Typetext backspace
-Typetext backspace
-wait 2
-Typetext global CCPLGBU
-Typetext downArrow, return
-click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("BottomHalf")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
-
-wait 3
-//if global PIAverdict is "ChangeNotRequired"
-Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
-Click imageName:"complete", waitFor:120
-wait 2
-Put [] into NonMandatoryFields
-Put [] into MandatoryFields
-
-
-
-if ImageFound(text:"Justification")
-insert "Justification" into MandatoryFields
-else
-insert "Justification" into NonMandatoryFields
-end if
-
-if ImageFound(text:"Reason")
-insert "Reason" into MandatoryFields
-else
-insert "Reason" into NonMandatoryFields
-end if
-
-if number of items of MandatoryFields is 2
-Put "Justification and Reason fields are Mandatory" into global Vstep
-
-Log global Vstep
-
-CaptureAtLog
-
-else
-Put "Non Mandatory fields are "&NonMandatoryFields into global Vstep
-
-Logerror global Vstep
-
-CaptureAtLog
-
-end if
-//Click text:"Cancel", waitFor:120,searchrectangle:ScreenPart("BottomHalf")
-//end if
-
-end PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
 
 to handle OpenRecord_PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
-SearchRecord
+
 PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
 end OpenRecord_PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
 
+to handle PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithFA
+	//Click imageName:"complete", waitFor:120
+	click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
+	click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
+		Typetext controlKey,a
+			Typetext backspace
+			Typetext backspace
+			wait 2
+			Typetext "Hygiene"
+			Typetext downArrow, return
+			click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("BottomHalf")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
+			
+			wait 3
+	//if global PIAverdict is "ChangeNotRequired"
+	Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
+	Click imageName:"complete", waitFor:120
+	wait 2
+	Put [] into NonMandatoryFields
+	Put [] into MandatoryFields
+
+	if ImageFound(text:"Justification")
+		insert "Justification" into MandatoryFields
+	else
+		insert "Justification" into NonMandatoryFields
+	end if
+	
+	if ImageFound(text:"Reason")
+		insert "Reason" into MandatoryFields
+	else
+		insert "Reason" into NonMandatoryFields
+	end if
+	
+	if number of items of MandatoryFields is 2
+		Put "Justification and Reason fields are Mandatory" into global Vstep
+		
+		Log global Vstep
+		
+		CaptureAtLog		
+		
+	else
+		Put "Non Mandatory fields are "&NonMandatoryFields into global Vstep
+		
+		Logerror global Vstep
+		
+		CaptureAtLog
+		
+	end if
+	
+	//end if
+	
+end PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithFA
+
+to handle PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithoutFA
+	//Click imageName:"complete", waitFor:120
+	click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
+	click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
+		Typetext controlKey,a
+			Typetext backspace
+			Typetext backspace
+			wait 2
+			Typetext "Hygiene"
+			Typetext downArrow, return
+			click imagelocation(text:"Yes", waitFor:100,SearchRectangle:ScreenPart("Center"))+[40,0](*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
+			
+			wait 3
+	//if global PIAverdict is "ChangeNotRequired"
+	Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
+	Click imageName:"complete", waitFor:120
+	wait 2
+	Put [] into NonMandatoryFields
+	Put [] into MandatoryFields
+
+	if ImageFound(text:"Justification")
+		insert "Justification" into MandatoryFields
+	else
+		insert "Justification" into NonMandatoryFields
+	end if
+	
+	if ImageFound(text:"Reason")
+		insert "Reason" into MandatoryFields
+	else
+		insert "Reason" into NonMandatoryFields
+	end if
+	
+	if number of items of MandatoryFields is 2
+		Put "Justification and Reason fields are Mandatory" into global Vstep
+		
+		Log global Vstep
+		
+		CaptureAtLog		
+		
+	else
+		Put "Non Mandatory fields are "&NonMandatoryFields into global Vstep
+		
+		Logerror global Vstep
+		
+		CaptureAtLog
+		
+	end if
+	
+	//end if
+	
+end PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields_Hygiene_WithoutFA
+
+to handle PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
+	//Click imageName:"complete", waitFor:120
+	click text:"Complete",searchrectangle:ScreenPart("TopRightQuadrant")
+	click imagelocation(text:"Global Business Unit",searchrectangle:ScreenPart("Center"))+[120,30]
+		Typetext controlKey,a
+			Typetext backspace
+			Typetext backspace
+			wait 2
+			Typetext global CCPLGBU
+			Typetext downArrow, return
+			click text:global FA_Require_Not, waitFor:100,SearchRectangle:ScreenPart("BottomHalf")(*,searchrectangle:[bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf")),bottomleft of imagerectangle(text:"Function Approvers Required",searchrectangle:ScreenPart("BottomHalf"))+[300,100]]*)
+			
+			wait 3
+	//if global PIAverdict is "ChangeNotRequired"
+	Click text:"Change not required", waitFor:120,searchrectangle:ScreenPart("Center")
+	Click imageName:"complete", waitFor:120
+	wait 2
+	Put [] into NonMandatoryFields
+	Put [] into MandatoryFields
+
+	if ImageFound(text:"Justification")
+		insert "Justification" into MandatoryFields
+	else
+		insert "Justification" into NonMandatoryFields
+	end if
+	
+	if ImageFound(text:"Reason")
+		insert "Reason" into MandatoryFields
+	else
+		insert "Reason" into NonMandatoryFields
+	end if
+	
+	if number of items of MandatoryFields is 2
+		Put "Justification and Reason fields are Mandatory" into global Vstep
+		
+		Log global Vstep
+		
+		CaptureAtLog		
+		
+	else
+		Put "Non Mandatory fields are "&NonMandatoryFields into global Vstep
+		
+		Logerror global Vstep
+		
+		CaptureAtLog
+		
+	end if
+	
+	//end if
+	
+end PrepareImpactAssessmentActionPlan_CCPL_VerifyMandatoryFields
 to handle FillJustificationReason_ProgressTo_PendingFunctionClosureApproval
 
 //PrepareImpactAssessmentActionPlan_Verdict
 PrepareImpactAssessmentActionPlan_Verdict_CCPL
-
 end FillJustificationReason_ProgressTo_PendingFunctionClosureApproval
 
-(*to handle OpenCC_SubmitForApproval_To_PendingQualityClosureApproval
+to handle OpenCC_SubmitForApproval_To_PendingQualityClosureApproval
 
 ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed
 
-end OpenCC_SubmitForApproval_To_PendingQualityClosureApproval*)
+end OpenCC_SubmitForApproval_To_PendingQualityClosureApproval
 
 to handle OpenCC_ApproveClosure_To_ChangeNotProgressed
 
@@ -29689,75 +30097,8 @@ ProgressTo_ChangeNotProgressed_CCPL
 
 end OpenCC_ApproveClosure_To_ChangeNotProgressed
 
-to handle QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
-try
-Put "Approved" into global QualityApprovalofCCClosureVerdict
-Click text:"Complete",waitfor:120,SearchRectangle:ScreenPart("topRightQuadrant")
-//waitfor 120,text:"Verdict",SearchRectangle:ScreenPart("Center")
-
-//Put "Approved" into global QualityApprovalofCCClosureVerdict
-
-if global QualityApprovalofCCClosureVerdict contains "Approved"
-Click text:"Quality Approved", waitFor:120,SearchRectangle:ScreenPart("BottomHalf")
-
-Typetext tabkey
-wait 1
-
-Click ImageLocation(text:"User Name",SearchRectangle:ScreenPart("BottomHalf"))+[0,30]
-TypeText global QAusername
-
-wait 2
-//Click ImageLocation(text:"Password",SearchRectangle:ScreenPart("Center"))+[0,30]
-TypeText tabKey
-TypeText global QApassword
-wait 2
-
-Typetext tabkey
-
-Typetext"Change to Scope"
-wait 2
-Typetext downArrow
-typetext return
-Click text:"Complete", waitFor:120,SearchRectangle:ScreenPart("BottomHalf")
-Put "QualityApprovalofCCClosureTaskCompletedWithApproved" into global Vstep
-Log global Vstep
-W_App_CommonHandlers.CaptureAtLog
-
-
-else if global QualityApprovalofCCClosureVerdict contains "Rejected"
-Click text:"Quality Rejected", waitFor:120,SearchRectangle:ScreenPart("BottomHalf")
-
-Click text:"Complete", waitFor:120,SearchRectangle:ScreenPart("BottomHalf")
-Put "QualityApprovalofCCClosureTaskCompletedWithRejected" into global Vstep
-Log global Vstep
-W_App_CommonHandlers.CaptureAtLog
-
-else
-Put "AllverdictOptionsAreNotAvailable" into global Vstep
-Logerror global Vstep
-CaptureAtLog
-end if
-
-
-Catch theException
-LogError theException
-W_App_CommonHandlers.CaptureAtLog
-//
-End try
-
-
-end QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
-
-
-to handle ProgressTo_ChangeNotProgressed_CCPL
-W_App_CommonHandlers.SearchRecord
-W_App_CommonHandlers.VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
-W_App_CommonHandlers.QualityApprovalOfCC_Closure_ChangeNotProgressed_CCPL
-W_App_CommonHandlers.VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
-end ProgressTo_ChangeNotProgressed_CCPL
-
 to handle SearchRecord_IAAP_VerifyGBUHygiene_CC_QA_Originator
-    OpenDependentRecord1 
+OpenDependentRecord1
 	Put "Change Control Record ID is"&the suitevariables.RecordId  into global Vstep
 	Log global Vstep
 	
@@ -29774,24 +30115,24 @@ end SearchRecord_IAAP_VerifyGBUHygiene_CC_QA_Originator
 
 to handle OpenCC_CloseCCWithoutFA_ConfirmJustificationReasonMandatory
 
-PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed
-
+//PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed
+PrepareImpactAssessmentActionPlan_VerifyMandatoryFields_ChangeNotProgressed_Second
 end OpenCC_CloseCCWithoutFA_ConfirmJustificationReasonMandatory
 
 to handle FillJustificationReason_ProgressTo_PendingQualityClosureApproval
 
-PrepareImpactAssessmentActionPlan_Verdict_withoutFA
-
+//PrepareImpactAssessmentActionPlan_Verdict_withoutFA
+PrepareImpactAssessmentActionPlan_Verdict_CCPL_withoutFA
 end FillJustificationReason_ProgressTo_PendingQualityClosureApproval
 
 to handle OpenCC_ApproveClosure_To_ChangeNotProgressed_Second
 
-ProgressTo_ChangeNotProgressed_withoutFA
-
+//ProgressTo_ChangeNotProgressed_withoutFA
+ProgressTo_ChangeNotProgressed_withoutFA_CCPL
 end OpenCC_ApproveClosure_To_ChangeNotProgressed_Second
 
 to handle SearchRecord_IAAP_VerifyGBUHygiene_FA_CC_QA_Originator
-
+OpenDependentRecord2
 	Put "Change Control Record ID is"&the suitevariables.RecordId  into global Vstep
 	Log global Vstep
 	
@@ -29811,15 +30152,16 @@ end SearchRecord_IAAP_VerifyGBUHygiene_FA_CC_QA_Originator
 
 to handle OpenCC_CloseCC_ConfirmJustificationReasonMandatory_Hygiene
 
-LoginToApplication_CC_VerifyMandatoryFields
+//LoginToApplication_CC_VerifyMandatoryFields
 
+LoginToApplication_CC_VerifyMandatoryFields_CCPL_withFA
 end OpenCC_CloseCC_ConfirmJustificationReasonMandatory_Hygiene
 
 to handle FillJustificationReason_ProgressTo_PendingFunctionClosureApproval_Hygiene
 
-//PrepareImpactAssessmentActionPlan_Verdict_withFA
-PrepareImpactAssessmentActionPlan_CCPL_VerdictwithFA
-VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+PrepareImpactAssessmentActionPlan_VerdictwithFA_CCPL
+VerifyLifeCycleState_PENDINGFUNCTIONCLOSUREAPPROVAL
+
 
 end FillJustificationReason_ProgressTo_PendingFunctionClosureApproval_Hygiene
 
@@ -29831,12 +30173,13 @@ ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_hygiene
 end OpenCC_SubmitForApproval_To_PendingQualityClosureApproval_Hygiene
 
 to handle ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_hygiene
-ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed
+
+ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_CCPL
 end ProgressTo_PendingQualityClosureApproval_ChangeNotProgressed_hygiene
 
 to handle OpenCC_ApproveClosure_To_ChangeNotProgressed_Third
 
-ProgressTo_ChangeNotProgressed
+ProgressTo_ChangeNotProgressed_CCPL_Hygiene
 
 end OpenCC_ApproveClosure_To_ChangeNotProgressed_Third
 
@@ -29858,16 +30201,15 @@ end VerifyDetails_Of_2FPA_AreVisible
 
 to handle Progress_AssociatedIA_To_ClosedComplete
 
-ProgressIA_ToClosedComplete
-
+//ProgressIA_ToClosedComplete
+ProgressIA_ToClosedComplete_CCPL
 end Progress_AssociatedIA_To_ClosedComplete
 
-to handle WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview_Logout
+(*to handle WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview
 
 LoginToApplication_CC_ChangeCoordinatorReview
-Logout
 
-end WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview_Logout
+end WaitMnts_VerifyCC_AutomaticallyMoveToChangeCoordiantorReview*)
 
 to handle ProgressCC_To_PFPA_FromCCReview
 
@@ -29901,8 +30243,8 @@ end OpenCC_BySecondFPA
 
 to handle ApproveCC_SecondFPA_ProgressTo_PQPA
 
-FAFinalApproval_PendingQualityPostApproval
-
+//FAFinalApproval_PendingQualityPostApproval
+FAFinal_PendingQualityPostApproval
 end ApproveCC_SecondFPA_ProgressTo_PQPA
 
 
@@ -29910,7 +30252,7 @@ end ApproveCC_SecondFPA_ProgressTo_PQPA
 
 //E2EQMS-TS040-FP-PL-CC
 to handle SearchRecord_Draft_VerifyGBUHygiene
-
+OpenDependentRecord1
 	Put "Change Control Record ID is"&the suitevariables.RecordId  into global Vstep
 	Log global Vstep
 	
@@ -29927,6 +30269,47 @@ end AssignCC_CCPL_InDraft
 
 to handle AssignQA_SameAs_CC_VerifyError
 
+AssignUser_Teams_QA_CC
+	
+	LogOut
+	LoginToApplication_CC
+	OpenDependentRecord1
+	CreateAssessmentItem
+	OpenRecord_AI_Draft
+	//VerifyLifeCycleState_Draft
+	//StartImpactAssessment
+	AssignUser_Teams_Assessor
+	//VerifyLifeCycleState_PENDINGASSESSMENT
+	LogOut
+	
+	LoginToApplication_Assessor
+	OpenDependentRecord1 
+	OpenRecord_AI_PENDINGASSESSMENT
+	//VerifyLifeCycleState_PENDINGASSESSMENT
+	AssessmentOfChangeControl
+	VerifyLifeCycleState_CLOSEDCOMPLETE
+	LogOut
+	
+	LoginToApplication_CC
+	OpenDependentRecord1
+	CreateImplementationAction
+	OpenRecord_IA_Draft
+	//VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	OpenDependentRecord1
+	NavigateToAffectedLocationInformation
+	CreateAffectedLocationInformation
+	//Add_ImpactedProduct
+	NavigateToImpactAssessmentOutputSection
+	EditImpactAssessmentOutput
+	
+	PrepareImpactAssessmentActionPlan_CCPL_Hygiene_NoFA
+	VerifyErrorMessage_NotToAddSameUser_QA
+
+
+
+
+(*
 wait 3
 	Click text:"Team",searchrectangle:[remotescreensize()*[0,0.2],remotescreensize()*[0.2,1]]
 	wait 5
@@ -29939,7 +30322,7 @@ wait 3
 	Typetext controlkey,a
 	Typetext backspace
 	wait 5
-	Typetext "Nutrition CC 1 UAT Change Coordinator"
+	Typetext "Nutrition CC 1 Change Coordinator"
 	
 	if imagefound(text:"No Matches found") then
 		Log "Application role selection is invalid for the user error message displayed"
@@ -29948,7 +30331,7 @@ wait 3
 	else
 		logError "User who is not part of Quality Approver is added as QA"
 		CaptureAtLog
-	end if
+	end if *)
 
 end AssignQA_SameAs_CC_VerifyError
 
@@ -29959,7 +30342,7 @@ AssignUser_Teams_QA
 end AssignQA_AppropriatePermissions
 
 to handle SearchRecord_Draft_VerifyGBUHealth
-
+SearchRecord
 Put "Change Control Record ID is"&the suitevariables.RecordId  into global Vstep
 	Log global Vstep
 	
@@ -29988,13 +30371,45 @@ end AssignQA_GBUHealth
 
 to handle RemoveAssignmentOfFA_AssignedPreviously
 
-RemoveUserFromTeam "Function Approver"
-
+//RemoveUserFromTeam "Function Approver"
+RemoveUserFromTeam_FunctionApprover
 end RemoveAssignmentOfFA_AssignedPreviously
 
 to handle AssignFA_SameAs_CC_VerifyError
 
-wait 3
+AssignUser_Teams_FA_CC
+	
+	CreateAssessmentItem
+	OpenRecord_AI_Draft
+	//VerifyLifeCycleState_Draft
+	//StartImpactAssessment
+	AssignUser_Teams_Assessor
+	//VerifyLifeCycleState_PENDINGASSESSMENT
+	LogOut
+	
+	LoginToApplication_Assessor
+	SearchRecord
+	OpenRecord_AI_PENDINGASSESSMENT
+	//VerifyLifeCycleState_PENDINGASSESSMENT
+	AssessmentOfChangeControl
+	//VerifyLifeCycleState_CLOSEDCOMPLETE
+	LogOut
+	
+	LoginToApplication_CC
+	SearchRecord
+	CreateImplementationAction
+	OpenRecord_IA_Draft
+	//VerifyLifeCycleState_Draft
+	AssignUser_Teams_ActionOwner
+	SearchRecord
+	NavigateToAffectedLocationInformation
+	CreateAffectedLocationInformation
+	//Add_ImpactedProduct
+	NavigateToImpactAssessmentOutputSection
+	EditImpactAssessmentOutput
+	PrepareImpactAssessmentActionPlan_CCPL
+	VerifyErrorMessage_NotToAddSameUser
+(*wait 3
 	Click text:"Team",searchrectangle:[remotescreensize()*[0,0.2],remotescreensize()*[0.2,1]]
 	wait 5
 	WaitFor 120, text:"Manage Team",Searchrectangle:ScreenPart("TopRightQuadrant")
@@ -30006,7 +30421,7 @@ wait 3
 	Typetext controlkey,a
 	Typetext backspace
 	wait 5
-	Typetext "Nutrition CC 1 UAT Change Coordinator"
+	Typetext "Nutrition CC 1 Change Coordinator"
 	
 	if imagefound(text:"No Matches found") then
 		Log "Application role selection is invalid for the user error message displayed"
@@ -30015,7 +30430,7 @@ wait 3
 	else
 		logError "User who is not part of Function Approver is added as QA"
 		CaptureAtLog
-	end if
+	end if*)
 
 end AssignFA_SameAs_CC_VerifyError
 
@@ -30058,7 +30473,7 @@ end OpenCC_IAAP_ByCC
 to handle Assign_2FA_ByCC_inIAAP
 
 wait 3
-	Click text:"Team",searchrectangle:[remotescreensize()*[0,0.2],remotescreensize()*[0.2,1]]
+Click text:"Team",searchrectangle:[remotescreensize()*[0,0.2],remotescreensize()*[0.2,1]]
 	wait 3
 	WaitFor 120, text:"Manage Team",Searchrectangle:ScreenPart("TopRightQuadrant")
 	click text:"Manage Team",Searchrectangle:ScreenPart("TopRightQuadrant")
@@ -30069,7 +30484,7 @@ wait 3
 	(*	Typetext controlkey,a
 	Typetext backspace*)
 	wait 1
-	Typetext "Nutrition CC 2 UAT Function Approver"
+	Typetext "Nutrition CC 2 Function Approver"
 	wait 1
 	typetext downarrow,return
 	click text:"Save",Searchrectangle:ScreenPart("TopRightQuadrant")
@@ -30088,12 +30503,12 @@ wait 3
 	click text:"Manage Team",Searchrectangle:ScreenPart("TopRightQuadrant")
 	wait 2
 	put "Function Approver" into Role
-	Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[150,50]
+	Click imagelocation(text:Role,searchrectangle:[remotescreensize()*[0.2,0.2],remotescreensize()])+[150,40]
 	wait 2
 	(*	Typetext controlkey,a
 	Typetext backspace*)
 	wait 1
-	Typetext "Nutrition CC 3 UAT Function Approver"
+	Typetext "Health CC 1 Function Approver"
 	wait 1
 	typetext downarrow,return
 	click text:"Save",Searchrectangle:ScreenPart("TopRightQuadrant")
@@ -30109,15 +30524,15 @@ end Assign_2FA_ByCC_inIAAP
 
 to handle CreateAI_ClosedComplete_CreateIA
 
-CreateAI_and_IA
-
+  CreateAI_and_IA
+//CreateAI_and_IA_SecondRecord
 end CreateAI_ClosedComplete_CreateIA
 
 (*to handle ProgressCC_To_PendingFunctionApproval
 
-	SearchRecord_Fill_Product_AndLocationInformation
-	
-end ProgressCC_To_PendingFunctionApproval*)
+SearchRecord_Fill_Product_AndLocationInformation
+
+end ProgressCC_To_PendingFunctionApproval *)
 
 to handle OpenCC_PendingFunctionApproval_ByPreviousFA
 
@@ -30164,11 +30579,13 @@ end OpenCC_PendingFunctionApproval_ByThirdFA
 to handle ReAssignFA_ToFourthFA
 
 ReassignFAByOtherFA
-
+CancelTask_FromCogWheel_WorkFlowTimeLine
 end ReAssignFA_ToFourthFA
 
 to handle PresentFA_CannotApproveCC
-
+Logout
+LoginToApplication "Function.cc.1.H@sb-reckitt.com","rbQone@3test"
+SearchRecord
 CannotCompleteTask
 
 end PresentFA_CannotApproveCC
@@ -30192,12 +30609,12 @@ try
 			click imagelocation(text:"Comments",searchrectangle:ScreenPart("Center"))+[120,0]
 			TypeText"testing"
 			Click ImageLocation(text:"User Name",SearchRectangle:ScreenPart("BottomHalf"))+[0,30]
-			TypeText "Function.cc.4.N.UAT@sb-rb.com"
+			TypeText "Function.cc.2.H@sb-reckitt.com"
 			
 			wait 2
 			//Click ImageLocation(text:"Password",SearchRectangle:ScreenPart("Center"))+[0,30]
 			TypeText tabKey
-			TypeText "rbQone@1test"
+			TypeText "rbQone@3test"
 			wait 2
 			Click imageName:"Complete", waitFor:120
 			
@@ -30226,10 +30643,12 @@ try
 		CaptureAtLog
 		//
 	End try
-
+VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
 end ApproveCC_ByFourthFA_ProgressTo_pendingQualityApproval
 
+to handle LoginToApplication_ChangeCordinator_to_Reassign
 
+ end LoginToApplication_ChangeCordinator_to_Reassign
 
 
 //E2EQMS-TS041-FP-PL-CC
@@ -30253,135 +30672,28 @@ to handle SearchRecord_Draft_VerifyGBUHealth_AssignCCQAFA
 end SearchRecord_Draft_VerifyGBUHealth_AssignCCQAFA
 
 to handle VerifyCC_In_IAAPState
-SearchRecord
+
 AssignToChangeCordinator_IAAP
-AssignUser_Teams_FA
-AssignUser_Teams_QA
 
 end VerifyCC_In_IAAPState
 
-to handle OpenCC_IAAP_ByCC
+(*to handle OpenCC_IAAP_ByCC
 
 SearchRecord
 
-end OpenCC_IAAP_ByCC
+end OpenCC_IAAP_ByCC*)
 
-to handle CreateAIComplete_CreateIAAssignAO_ByCC
+to handle VerifyError_ForNoRiskAssessment_FillJustification
 
-//CreateAI_and_IA_Fill_Product_LocationInformation
-CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
 
-end CreateAIComplete_CreateIAAssignAO_ByCC
 
-to handle CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
-    CreateAssessmentItem
-	OpenRecord_AI_Draft
-	//VerifyLifeCycleState_Draft
-	//StartImpactAssessment
-	AssignUser_Teams_Assessor
-	VerifyLifeCycleState_PENDINGASSESSMENT
-	LogOut
-	
-	LoginToApplication_Assessor
-	SearchRecord 
-	OpenRecord_AI_PENDINGASSESSMENT
-	VerifyLifeCycleState_PENDINGASSESSMENT
-	AssessmentOfChangeControl
-	VerifyLifeCycleState_CLOSEDCOMPLETE
-	LogOut
-	
-	LoginToApplication_CC
-	SearchRecord
-	CreateImplementationAction
-	OpenRecord_IA_Draft
-	
-	AssignUser_Teams_ActionOwner
-	SearchRecord
-	NavigateToAffectedLocationInformation
-	CreateAffectedLocationInformation
-	//Add_ImpactedProduct
-	wait 5
-	
-	
-end CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
-
-to  handle EditImpactAssessmentOutput_withoutJustification_CCPL
-
-          try
-		
-		(*		Put "Built-In" into global FormalRiskAssessmentRequired
-		Put "Low" into global OverAllRisk*)
-		
-		click Image:"edit_img",waitfor:120,SearchRectangle:ScreenPart("topRightQuadrant")
-		waitfor 120,text:"Implementation success",SearchRectangle:ScreenPart("LeftHalf")
-		click ImageLocation(text:"Implementation success",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
-		Typetext controlKey,a
-		Typetext backspace
-		Typetext "Test"
-		
-		click ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
-		(*Typetext global FormalRiskAssessmentRequired
-		Typetext downArrow, return*)
-		wait 2
-		// deleting previous value
-		set the SearchRectangle to  [ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[0,-5],ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[700,150]]
-
-		repeat 3 times
-			if ImageFound(image:"RiskAssessmentClosebutton")
-				click FoundImageLocation()
-				
-			end if
-			wait 1
-		end repeat
-		set the SearchRectangle to []
-
-    
-		click text:global FormalRiskAssessmentRequired,SearchRectangle:ScreenPart("LeftHalf")
-		wait 2
-		click ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[0,-20]
-		
-		click ImageLocation(text:"Risk Assessment Justification",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
-		Typetext controlKey,a
-		Typetext backspace
-			
-			wait 2
-		click ImageLocation(text:"Overall Risk",SearchRectangle:ScreenPart("RightHalf"))+[200,1]
-		wait 1
-		//OverAllRisk
-		Typetext controlKey,a
-		Typetext backspace
-		click text:global OverAllRisk,SearchRectangle:ScreenPart("RightHalf")
-		click ImageLocation(text:"Overall Risk",SearchRectangle:ScreenPart("RightHalf"))+[0,-21]
-		wait 5
-		
-		click text:"Save",SearchRectangle:ScreenPart("TopRightQuadrant")
-		wait 5
-		VerifyErrorMessage_ToFillJustification
-		(*
-		if ImageFound(imageName:"edit_img", waitFor:120,SearchRectangle:ScreenPart("TopRightQuadrant"))
-			Put "ImpactAssessmentOutPutEditedSuccessfully" into global Vstep
-			Log global Vstep
-			W_App_CommonHandlers.CaptureAtLog
-		else
-			Put "ImpactAssessmentOutPutNotEditedSuccessfully" into global Vstep
-			LogError global Vstep
-			W_App_CommonHandlers.CaptureAtLog
-		end if*)
-		
-	Catch theException
-		LogError theException
-		W_App_CommonHandlers.CaptureAtLog
-		//
-	End try
+NavigateToImpactAssessmentOutputSection
+EditImpactAssessmentOutput_withoutJustification_CCPL
 
 
 
 
-
-
-
-
-end EditImpactAssessmentOutput_withoutJustification_CCPL
+end VerifyError_ForNoRiskAssessment_FillJustification
 
 to handle CreateAI_and_IA_Fill_Product_LocationInformation
 CreateAssessmentItem
@@ -30409,22 +30721,143 @@ CreateAssessmentItem
 	SearchRecord
 	NavigateToAffectedLocationInformation
 	CreateAffectedLocationInformation
-	//Add_ImpactedProduct
+	Add_ImpactedProduct
 	NavigateToImpactAssessmentOutputSection
 	EditImpactAssessmentOutput
 end CreateAI_and_IA_Fill_Product_LocationInformation
 
-to handle VerifyError_ForNoRiskAssessment_FillJustification
+(*to handle VerifyError_ForNoRiskAssessment_FillJustification
 
-NavigateToImpactAssessmentOutputSection
-EditImpactAssessmentOutput_withoutJustification_CCPL
+VerifyErrorMessage_ToFillJustification
 
 end VerifyError_ForNoRiskAssessment_FillJustification
+*)
+to handle EditImpactAssessmentOutput_withoutJustification_CCPL
+
+
+
+try
+
+(* Put "Built-In" into global FormalRiskAssessmentRequired
+Put "Low" into global OverAllRisk*)
+
+click Image:"edit_img",waitfor:120,SearchRectangle:ScreenPart("topRightQuadrant")
+waitfor 120,text:"Implementation success",SearchRectangle:ScreenPart("LeftHalf")
+click ImageLocation(text:"Implementation success",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
+Typetext controlKey,a
+Typetext backspace
+Typetext "Test"
+
+click ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
+(*Typetext global FormalRiskAssessmentRequired
+Typetext downArrow, return*)
+wait 2
+// deleting previous value
+set the SearchRectangle to [ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[0,-5],ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[700,150]]
+
+
+
+repeat 3 times
+if ImageFound(image:"RiskAssessmentClosebutton")
+click FoundImageLocation()
+
+end if
+wait 1
+end repeat
+set the SearchRectangle to []
+
+
+
+
+click text:global FormalRiskAssessmentRequired,SearchRectangle:ScreenPart("LeftHalf")
+wait 2
+click ImageLocation(text:"Formal Risk Assessment",SearchRectangle:ScreenPart("LeftHalf"))+[0,-20]
+
+click ImageLocation(text:"Risk Assessment Justification",SearchRectangle:ScreenPart("LeftHalf"))+[200,2]
+Typetext controlKey,a
+Typetext backspace
+
+wait 2
+click ImageLocation(text:"Overall Risk",SearchRectangle:ScreenPart("RightHalf"))+[200,1]
+wait 1
+//OverAllRisk
+Typetext controlKey,a
+Typetext backspace
+click text:global OverAllRisk,SearchRectangle:ScreenPart("RightHalf")
+click ImageLocation(text:"Overall Risk",SearchRectangle:ScreenPart("RightHalf"))+[0,-21]
+wait 5
+
+click text:"Save",SearchRectangle:ScreenPart("TopRightQuadrant")
+wait 5
+VerifyErrorMessage_ToFillJustification
+(*
+if ImageFound(imageName:"edit_img", waitFor:120,SearchRectangle:ScreenPart("TopRightQuadrant"))
+Put "ImpactAssessmentOutPutEditedSuccessfully" into global Vstep
+Log global Vstep
+W_App_CommonHandlers.CaptureAtLog
+else
+Put "ImpactAssessmentOutPutNotEditedSuccessfully" into global Vstep
+LogError global Vstep
+W_App_CommonHandlers.CaptureAtLog
+end if*)
+
+Catch theException
+LogError theException
+W_App_CommonHandlers.CaptureAtLog
+//
+End try
+
+end EditImpactAssessmentOutput_withoutJustification_CCPL
+
+to handle CreateAIComplete_CreateIAAssignAO_ByCC
+
+
+
+//CreateAI_and_IA_Fill_Product_LocationInformation
+CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
+
+
+
+end CreateAIComplete_CreateIAAssignAO_ByCC
+
+
+
+to handle CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
+CreateAssessmentItem
+OpenRecord_AI_Draft
+//VerifyLifeCycleState_Draft
+//StartImpactAssessment
+AssignUser_Teams_Assessor
+VerifyLifeCycleState_PENDINGASSESSMENT
+LogOut
+
+LoginToApplication_Assessor
+SearchRecord
+OpenRecord_AI_PENDINGASSESSMENT
+VerifyLifeCycleState_PENDINGASSESSMENT
+AssessmentOfChangeControl
+VerifyLifeCycleState_CLOSEDCOMPLETE
+LogOut
+
+LoginToApplication_CC
+SearchRecord
+CreateImplementationAction
+OpenRecord_IA_Draft
+
+AssignUser_Teams_ActionOwner
+SearchRecord
+NavigateToAffectedLocationInformation
+CreateAffectedLocationInformation
+//Add_ImpactedProduct
+wait 5
+
+
+end CreateAI_and_IA_Fill_Product_LocationInformation_CCPL
 
 to handle EditCC_NoFormalRiskRequired_FillJustification
 
+//EditImpactAssessmentOutput_Justification
 EditImpactAssessmentOutput
-
 end EditCC_NoFormalRiskRequired_FillJustification
 
 to handle SubmitCC_ProgressTo_PendingFunctionApproval
@@ -30472,8 +30905,8 @@ end CreateRiskItem_ByCC
 
 to handle SubmitCC_ProgressTo_PendingFunctionApproval_Second
 
+//PrepareImpactAssessmentActionPlan_PendingFunctionApproval
 PrepareImpactAssessmentActionPlan_CCPL_Progress_Prepopulate
-
 end SubmitCC_ProgressTo_PendingFunctionApproval_Second
 
 to handle VerifyImpactAssessmentOutput_CannotRaiseRiskAssessment_ForCC
@@ -30496,12 +30929,13 @@ end VerifyImpactAssessmentOutput_CannotRaiseRiskAssessment_ForFA
 
 to handle SubmitCC_ProgressTo_PendingQualityApproval
 
+
+SearchRecord
+VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+FunctionApprovalOfChangeControl_second
+VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
 //ProgressTo_PendingQualityApproval
-    SearchRecord
-	VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
-	FunctionApprovalOfChangeControl_second
-	VerifyLifeCycleState_PENDINGQUALITYAPPROVAL
-	
+
 end SubmitCC_ProgressTo_PendingQualityApproval
 
 to handle OpenCC_PendingQualityApproval_ByQA
@@ -30558,7 +30992,7 @@ to handle OpenDependentRecord1
 		click text:global RecordType, SearchRectangle:[bottomLeft of Imagerectangle(text:"QMS Processes",SearchRectangle:ScreenPart("TopLeftQuadrant"))+[-25,0],imagelocation(text:"QMS Processes",SearchRectangle:ScreenPart("TopLeftQuadrant"))+[163,223]],waitfor:50
 
 		wait 4
-		click text:"All",waitfor:100,searchrectangle:[RemoteScreenSize()*[0,0.05],RemoteScreenSize()*[0.08,0.2]]
+		click text:"All",waitfor:100,searchrectangle:[RemoteScreenSize()*[0,0.05],RemoteScreenSize()*[0.08,0.3]]
 		wait 2
 		(*Put "List of "&global RecordType&"s should be displayed" into global Vstep
 		Log global Vstep
@@ -30855,59 +31289,29 @@ OpenDependentRecord2
 VerifyLifeCycleState "Dependent - Approved"
 OpenDependentRecord3
 VerifyLifeCycleState "Dependent - Approved"
-
 end ConfirmAssociateddependentCCs_MovedTo_DependentPendingClosureApproval
 
-to handle AssignToChangeCordinator_Cancel_CCPL
-try
-
-Click imageName:"MainCancel", waitFor:120,searchrectangle:Screenpart("TopRightQuadrant")
-wait 5
-
-Click imageName:"StartButton3", waitFor:120,searchrectangle:Screenpart("Center")
-wait 5
-
-Put"Complaint Coordinator Cancelled Complaint Action" into global Vstep
-Log global Vstep
-W_App_CommonHandlers.CaptureAtLog
-
-
-Catch theException
-Logerror theException
-W_App_CommonHandlers.CaptureAtLog
-
-End try
-
-
-
-VerifyLifeCycleState_CLOSEDCHANGENOTPROGRESSED
-
-
-
-end AssignToChangeCordinator_Cancel_CCPL
 to handle CompleteByFAandQA_To_ClosedNotImplemented_VerifyDependentCCs
-LogOut
+	LogOut
 
-
-
-LoginToApplication_PFA
-SearchRecord
-FunctionApprovalOfCC_Closure_ChangeNotImplemented
-VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
-Logout
-LoginToApplication_QA
-SearchRecord
-QualityApprovalOfCC_Closure_ChangeNotImplemented
-VerifyLifeCycleState_CHANGENOTIMPLEMENTED
-
-
-OpenDependentRecord1
-VerifyLifeCycleState_CHANGENOTIMPLEMENTED
-OpenDependentRecord2
-VerifyLifeCycleState_CHANGENOTIMPLEMENTED
-OpenDependentRecord3
-VerifyLifeCycleState_CHANGENOTIMPLEMENTED
-Logout
+	LoginToApplication_PFA
+	SearchRecord
+	FunctionApprovalOfCC_Closure_ChangeNotImplemented
+	VerifyLifeCycleState_PENDINGQUALITYCLOSUREAPPROVAL
+	Logout
+	LoginToApplication_QA
+	SearchRecord
+	QualityApprovalOfCC_Closure_ChangeNotImplemented
+	VerifyLifeCycleState_CHANGENOTIMPLEMENTED
+	
+	
+	OpenDependentRecord1
+	VerifyLifeCycleState_CHANGENOTIMPLEMENTED	
+	OpenDependentRecord2
+	VerifyLifeCycleState_CHANGENOTIMPLEMENTED
+	OpenDependentRecord3
+	VerifyLifeCycleState_CHANGENOTIMPLEMENTED
+	Logout
 end CompleteByFAandQA_To_ClosedNotImplemented_VerifyDependentCCs
 
 
@@ -31169,7 +31573,7 @@ end LaunchAndLoginToApplication_FA_PL
 
 
 //E2EQMS-TS001-FP-PL
-to handle SKU_ProductCCRecords_AreInDraft
+to handle 4SKU_ProductCCRecords_AreInDraft
 
 Put "Change Control Lead Record ID is"&the suitevariables.RecordId  into global Vstep
 	Log global Vstep
@@ -31183,7 +31587,7 @@ Put "Change Control Lead Record ID is"&the suitevariables.RecordId  into global 
 	Put "Change Control Dependent Record ID3 is"&global ChildRecordID3  into global Vstep
 	Log global Vstep
 
-end SKU_ProductCCRecords_AreInDraft
+end 4SKU_ProductCCRecords_AreInDraft
 
 to handle ConfirmLeadanddependentCC_FieldsAreIn_GeneralInfo
 
@@ -31232,7 +31636,6 @@ end ExpandDependentCCSection_VerifyCreateButton
 
 to handle ClickCreate_VerifyLeadandDependentCC
 
-NavigateToSectionFromLeftPane "Dependent Change Control"
 Click text:"Create", waitFor:120,searchRectangle:ScreenPart("TopLeftQuadrant")
 WaitFor 30, text:"Create Change Control Dependency",searchrectangle:ScreenPart("Center")
 
@@ -31241,7 +31644,7 @@ WaitFor 30, text:"Create Change Control Dependency",searchrectangle:ScreenPart("
 			put "Lead Change Control is pre populated" into global Vstep
 			Log global Vstep
 			CaptureAtLog
-			//Click FoundImageLocation()
+			Click FoundImageLocation()
 		else 
 			put "Lead Change Control is not pre populated" into global Vstep
 			Log global Vstep
@@ -31264,7 +31667,7 @@ end In_DependentCCField_VerifyTheRecords
 to handle SelectOneCC_and_Save
 
 click imagelocation(text:"Use Search Bar",SearchRectangle:ScreenPart("TopHalf"))+[0,25]
-Typetext global ChildRecordID1
+Typetext global ChildRecordID
 Typetext return
 wait 4
 click imagelocation(text:"Record ID",SearchRectangle:ScreenPart("Center"))+[0,31]
@@ -31278,7 +31681,6 @@ end SelectOneCC_and_Save
 to handle RefreshBrowser_LeadCCFieldasYes
 
 TypeText F5
-wait 15
 NavigateToSectionFromLeftPane "General Information"
 
 put ReadText(topRight of ImageRectangle(text:"Lead CC"),ImageLocation(text:"Lead CC")+[300,30]) into LeadCCYes
@@ -31301,12 +31703,9 @@ end RefreshBrowser_LeadCCFieldasYes
 
 to handle In_DependentCCSection_VerifyTheFields
 
+OpenChildRecord_withRecordIDReference
 
-NavigateToSectionFromLeftPane "Dependent Change Control"
-wait 5
-click ImageLocation(text:"Record ID")+[-5,30]
-wait 5
-if imagefound(text:"Lead Change Control", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Dependent Change Control", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"SKU Number", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Product Description", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Market Sold", waitFor:10,SearchRectangle:ScreenPart("LeftHalf"))
+if imagefound(text:"Lead Change Control", waitFor:10,SearchRectangle:ScreenPart("Center")) and if imagefound(text:"Dependent Change Control", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"SKU Number", waitFor:10,SearchRectangle:ScreenPart("Center")) and if imagefound(text:"Product Description", waitFor:10,SearchRectangle:ScreenPart("Center")) and if imagefound(text:"Market Sold", waitFor:10,SearchRectangle:ScreenPart("Center"))
 			
 	put "Fields are displayed as expected" into global Vstep
 	Log global Vstep
@@ -31325,8 +31724,7 @@ end In_DependentCCSection_VerifyTheFields
 
 to handle OpenDependentCC_IsIn_DependentPreapproved
 
-//click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("LeftHalf"))+[70,0]
-OpenDependentRecord1
+click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("LeftHalf"))+[70,0]
 wait 5
 VerifyLifeCycleState "Dependent"
 
@@ -31357,13 +31755,15 @@ end LeadCCNo_DependentCCyes
 to handle LocateLeadCC_VerifyDependencyState
 
 NavigateToSectionFromLeftPane "Lead Change Control"
-
+OpenChildRecord_withRecordIDReference
 VerifyLifeCycleState "Dependent"
 
 end LocateLeadCC_VerifyDependencyState
 
 to handle VerifySections_NonEditable_inDependentPreApproved
 
+click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("LeftHalf"))+[70,0]
+wait 5
 
 if imagefound(text:"General Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Affected Location Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Impacted Product Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Key Milestones", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Record Details", waitFor:10,SearchRectangle:ScreenPart("LeftHalf"))
 			
@@ -31396,10 +31796,9 @@ wait 3
 Click text:"Create", waitFor:120,searchRectangle:ScreenPart("TopLeftQuadrant")
 WaitFor 30, text:"Create Change Control Dependency",searchrectangle:ScreenPart("Center")
 
-click ImageLocation(text:"Dependent Change",searchrectangle:ScreenPart("Center"))+[100,0]
+click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("TopRightQuadrant"))+[100,0]
 	wait 2
 	Typetext global ChildRecordID2
-	Typetext return
 	
 click item 2 of everyimagelocation( text:"Save",SearchRectangle:ScreenPart("BottomHalf"))
 		
@@ -31427,7 +31826,7 @@ end ConfirmCC_RegressedTo_DependentpreApproved
 
 to handle Confirm_MentionedSections_VisibleForCC
 
-if imagefound(text:"General Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Affected Location Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Impacted Product Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Key Milestones", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Record Details", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Site Area(s)", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Attachments", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Associated Records", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Lead Change Control", waitFor:10,SearchRectangle:ScreenPart("LeftHalf"))
+if imagefound(text:"General Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Affected Location Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Impacted Product Information", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Key Milestones", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Record Details", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Site Area(s) & Sub-Area(s)", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Attachments", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Associated Records", waitFor:10,SearchRectangle:ScreenPart("LeftHalf")) and if imagefound(text:"Lead Change Control", waitFor:10,SearchRectangle:ScreenPart("LeftHalf"))
 			
 	put "Sections are displayed as expected" into global Vstep
 	Log global Vstep
@@ -31450,7 +31849,7 @@ wait 3
 Click text:"Create", waitFor:120,searchRectangle:ScreenPart("TopLeftQuadrant")
 WaitFor 30, text:"Create Change Control Dependency",searchrectangle:ScreenPart("Center")
 
-click ImageLocation(text:"Dependent Change",searchrectangle:ScreenPart("Center"))+[100,0]
+click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("TopRightQuadrant"))+[100,0]
 	wait 2
 	Typetext the suitevariables.RecordId
 	
@@ -31476,17 +31875,15 @@ end OpenFourthCC_VerifyCCPL_InDraft
 to handle ReturnLeadCC_AssignCC_progressToIAAP_NavigateDependentCC
 
 SearchRecord
-AssignUser_Teams_CC
-NavigateToSectionFromLeftPane "Dependent Change Control"
 
+NavigateToSectionFromLeftPane "Dependent Change Control"
 wait 3
 Click text:"Create", waitFor:120,searchRectangle:ScreenPart("TopLeftQuadrant")
 WaitFor 30, text:"Create Change Control Dependency",searchrectangle:ScreenPart("Center")
 
-click ImageLocation(text:"Dependent Change",searchrectangle:ScreenPart("Center"))+[100,0]
+click ImageLocation(text:"Dependent Change Control",searchrectangle:ScreenPart("TopRightQuadrant"))+[100,0]
 	wait 2
 	Typetext global ChildRecordID3
-	Typetext downArrow,return
 	
 click item 2 of everyimagelocation( text:"Save",SearchRectangle:ScreenPart("BottomHalf"))
 		
@@ -31508,9 +31905,20 @@ end ReturnLeadCC_AssignCC_progressToIAAP_NavigateDependentCC
 to handle PossibleToRemove_DependentCC_AlsoRemovesSection
 
 NavigateToSectionFromLeftPane "Dependent Change Control"
-click "Dependent_Delete"
-click text :"Ungroup"
-click ImageLocation(text:"Yes",searchrectangle:ScreenPart("Center"))
+OpenChildRecord_withRecordIDReference
+wait 5
+Click imageName:"CogWheelNew", waitFor:120
+
+if ImageFound(text:"Delete", waitFor:120,SearchRectangle:ScreenPart("TopRightQuadrant"))
+			Put "Dependent Change Control can be deleted" into global Vstep
+			Log global Vstep
+			W_App_CommonHandlers.CaptureAtLog
+	else
+			Put "Dependent Change Control can not be deleted" into global Vstep
+			LogError global Vstep
+			W_App_CommonHandlers.CaptureAtLog
+			
+	end if
 
 end PossibleToRemove_DependentCC_AlsoRemovesSection
 
@@ -31523,39 +31931,7 @@ end OpenCC_ConfirmLeadandDependentCCReset
 
 to handle ReturnLeadCC_progressToIAAP_NavigateDependentCC
 
-SearchRecord
-AssignUser_Teams_FA
-AssignUser_Teams_QA
-CreateAssessmentItem
-	OpenRecord_AI_Draft
-	//VerifyLifeCycleState_Draft
-	//StartImpactAssessment
-	AssignUser_Teams_Assessor
-	VerifyLifeCycleState_PENDINGASSESSMENT
-	LogOut
-	
-	LoginToApplication_Assessor
-	SearchRecord 
-	OpenRecord_AI_PENDINGASSESSMENT
-	VerifyLifeCycleState_PENDINGASSESSMENT
-	AssessmentOfChangeControl
-	VerifyLifeCycleState_CLOSEDCOMPLETE
-	LogOut
-	
-	LoginToApplication_CC
-	SearchRecord
-	CreateImplementationAction
-	OpenRecord_IA_Draft
-	
-	AssignUser_Teams_ActionOwner
-	SearchRecord
-	NavigateToAffectedLocationInformation
-	CreateAffectedLocationInformation
-	
-	NavigateToImpactAssessmentOutputSection
-	EditImpactAssessmentOutput
-PrepareImpactAssessmentActionPlan_CCPL
-VerifyLifeCycleState_PENDINGFUNCTIONAPPROVAL
+ProgressFrom_IAandAP_ToPendingFunctionApproval
 LogOut
 LoginToApplication_FA
 ProgressTo_PendingQualityApproval
@@ -31565,20 +31941,18 @@ end ReturnLeadCC_progressToIAAP_NavigateDependentCC
 
 to handle VerifyDependentCCRecords_In_dependentPreApproved
 
-//OpenDependentRecord2
-//OpenDependentRecord3
-NavigateToSectionFromLeftPane "Dependent Change Control"
-Logout
+OpenDependentRecord2
+OpenDependentRecord3
 
 end VerifyDependentCCRecords_In_dependentPreApproved
 
 to handle CompleteApproval_ProgressLeadCC_To_InImplementation
 
-LoginToApplication_QA
+LoginToApplication_CC
 SearchRecord
 QualityApprovalOfChangeControl_InImplementation
-NavigateToSectionFromLeftPane "Dependent Change Control"
-
+OpenDependentRecord2
+OpenDependentRecord3
 
 end CompleteApproval_ProgressLeadCC_To_InImplementation
 
@@ -31591,14 +31965,12 @@ CreateButtonNotAvailable
 end ExpandDependentCCSection_VerifyCreateButtonNotAvailable
 
 to handle Confirm_DependentCC_CannotRemoved
-
 NavigateToSectionFromLeftPane "Dependent Change Control"
-//OpenChildRecord_withRecordIDReference
+OpenChildRecord_withRecordIDReference
 wait 5
+Click imageName:"CogWheelNew", waitFor:120
 
-click "Dependent_Delete"
-
-if ImageFound(text:"Ungroup", waitFor:120,SearchRectangle:ScreenPart("TopRightQuadrant"))
+if ImageFound(text:"Delete", waitFor:120,SearchRectangle:ScreenPart("TopRightQuadrant"))
 			Put "Dependent Change Control can be deleted" into global Vstep
 			LogError global Vstep
 			W_App_CommonHandlers.CaptureAtLog
@@ -31626,12 +31998,17 @@ to handle CloseLeadCC_ProgressTo_ClosedImplemented_VerifyDependentCC
 	LoginToApplication_CC
 	SearchRecord
 	VerifyLifeCycleState_CHANGECOORDINATORREVIEW
-	//ImplementTheChange
+	ImplementTheChange
 	ReviewTheImplementationOfTheChange
-	
+	VerifyLifeCycleState_PENDINGFUNCTIONPOSTAPPROVAL
 	LogOut
 	
-	
+	LoginToApplication_PFA
+	SearchRecord
+	VerifyLifeCycleState_PENDINGFUNCTIONPOSTAPPROVAL
+	FAFinalApproval
+	VerifyLifeCycleState_PENDINGQUALITYPOSTAPPROVAL
+	LogOut
 	
 	LoginToApplication_QA
 	SearchRecord
